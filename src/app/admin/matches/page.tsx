@@ -1,0 +1,138 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { cn } from '@/lib/utils'
+
+export default function AdminMatchesPage() {
+  const [players, setPlayers] = useState<any[]>([])
+  const [matches, setMatches] = useState<any[]>([])
+  const [p1, setP1] = useState(''); const [p2, setP2] = useState('')
+  const [winner, setWinner] = useState<'player1' | 'player2' | 'draw'>('player1')
+  const [mode, setMode] = useState('sword')
+  const [msg, setMsg] = useState('')
+  const [tab, setTab] = useState<'submit' | 'list'>('list')
+
+  const MODES = ['sword', 'axe', 'pot', 'nethpot', 'uhc', 'mace', 'smp', 'vanilla']
+
+  useEffect(() => {
+    fetchPlayers(); fetchMatches()
+  }, [])
+
+  async function fetchPlayers() {
+    try { const r = await fetch('/api/players'); const d = await r.json(); setPlayers(d.data ?? []) } catch { setPlayers([]) }
+  }
+  async function fetchMatches() {
+    try { const r = await fetch('/api/matches'); const d = await r.json(); setMatches(d.data ?? []) } catch { setMatches([]) }
+  }
+
+  async function submitMatch() {
+    if (!p1 || !p2) return
+    const pl1 = players.find(p => p.username.toLowerCase() === p1.toLowerCase())
+    const pl2 = players.find(p => p.username.toLowerCase() === p2.toLowerCase())
+    if (!pl1 || !pl2) { setMsg('❌ Player not found'); return }
+    const r = await fetch('/api/matches', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ player1Id: pl1.id, player2Id: pl2.id, winner, mode }),
+    })
+    if (r.ok) { setMsg('✅ Match submitted!'); setP1(''); setP2(''); fetchMatches() }
+    else { const e = await r.json(); setMsg(`❌ ${e.error}`) }
+  }
+
+  async function approveMatch(id: string) {
+    const r = await fetch(`/api/matches/${id}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'approve' }),
+    })
+    if (r.ok) { setMsg('✅ Match approved!'); fetchMatches(); fetchPlayers() }
+    else setMsg('❌ Failed to approve')
+  }
+
+  async function rejectMatch(id: string) {
+    const r = await fetch(`/api/matches/${id}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'reject', reason: 'Rejected by admin' }),
+    })
+    if (r.ok) { setMsg('✅ Match rejected!'); fetchMatches() }
+    else setMsg('❌ Failed to reject')
+  }
+
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+      <h1 className="text-2xl font-black mb-6">Match Management</h1>
+
+      <div className="flex gap-2 mb-6">
+        <button onClick={() => setTab('list')} className={cn('rounded-lg px-4 py-2 text-sm font-medium transition-colors', tab === 'list' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'bg-card border border-border/50 text-muted-foreground')}>Match List</button>
+        <button onClick={() => setTab('submit')} className={cn('rounded-lg px-4 py-2 text-sm font-medium transition-colors', tab === 'submit' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'bg-card border border-border/50 text-muted-foreground')}>Submit Match</button>
+      </div>
+
+      {tab === 'submit' && (
+        <div className="rounded-xl border border-border/50 bg-card/50 p-6">
+          <h2 className="font-bold text-lg mb-4">Submit Match</h2>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 items-end">
+            <div><label className="block text-xs text-muted-foreground mb-1">Player 1</label><input value={p1} onChange={e => setP1(e.target.value)} placeholder="Username" className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm focus:outline-none focus:border-amber-500/50" /></div>
+            <div><label className="block text-xs text-muted-foreground mb-1">Player 2</label><input value={p2} onChange={e => setP2(e.target.value)} placeholder="Username" className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm focus:outline-none focus:border-amber-500/50" /></div>
+            <div><label className="block text-xs text-muted-foreground mb-1">Winner</label>
+              <select value={winner} onChange={e => setWinner(e.target.value as any)} className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm">
+                <option value="player1">Player 1</option>
+                <option value="player2">Player 2</option>
+                <option value="draw">Draw</option>
+              </select>
+            </div>
+            <div><label className="block text-xs text-muted-foreground mb-1">Mode</label>
+              <select value={mode} onChange={e => setMode(e.target.value)} className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm">
+                {MODES.map(m => <option key={m} value={m}>{m.charAt(0).toUpperCase() + m.slice(1)}</option>)}
+              </select>
+            </div>
+          </div>
+          <button onClick={submitMatch} className="mt-4 rounded-lg bg-amber-500 px-5 py-2 text-sm font-bold text-black hover:bg-amber-400 transition-all">Submit Match</button>
+          {msg && <p className="mt-3 text-sm">{msg}</p>}
+        </div>
+      )}
+
+      {tab === 'list' && (
+        <div className="rounded-xl border border-border/50 bg-card/50 p-6 overflow-x-auto">
+          <h2 className="font-bold text-lg mb-4">All Matches</h2>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border/50 text-muted-foreground">
+                <th className="px-3 py-2 text-left">P1</th>
+                <th className="px-3 py-2 text-center">vs</th>
+                <th className="px-3 py-2 text-left">P2</th>
+                <th className="px-3 py-2 text-center">Mode</th>
+                <th className="px-3 py-2 text-center">Status</th>
+                <th className="px-3 py-2 text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {matches.map((m: any) => (
+                <tr key={m.id} className="border-b border-border/30 hover:bg-accent/20">
+                  <td className="px-3 py-2 font-medium">{m.player1?.username ?? m.player1Id?.slice(0,8)}</td>
+                  <td className="px-3 py-2 text-center font-bold">
+                    <span className={cn('rounded px-2 py-0.5 text-xs', m.winner === 'player1' ? 'bg-green-500/20 text-green-400' : m.winner === 'player2' ? 'bg-red-500/20 text-red-400' : 'bg-gray-500/20 text-gray-400')}>
+                      {m.winner === 'player1' ? '1-0' : m.winner === 'player2' ? '0-1' : 'D'}
+                    </span>
+                  </td>
+                  <td className="px-3 py-2 font-medium">{m.player2?.username ?? m.player2Id?.slice(0,8)}</td>
+                  <td className="px-3 py-2 text-center text-xs text-muted-foreground uppercase">{m.mode}</td>
+                  <td className="px-3 py-2 text-center">
+                    <span className={cn('rounded px-2 py-0.5 text-xs font-medium', m.status === 'APPROVED' && 'bg-green-500/20 text-green-400', m.status === 'PENDING' && 'bg-yellow-500/20 text-yellow-400', m.status === 'REJECTED' && 'bg-red-500/20 text-red-400')}>{m.status}</span>
+                  </td>
+                  <td className="px-3 py-2 text-center">
+                    {m.status === 'PENDING' && (
+                      <div className="flex gap-1 justify-center">
+                        <button onClick={() => approveMatch(m.id)} className="rounded bg-green-500/20 px-2 py-1 text-xs text-green-400 hover:bg-green-500/30 transition-colors">✓</button>
+                        <button onClick={() => rejectMatch(m.id)} className="rounded bg-red-500/20 px-2 py-1 text-xs text-red-400 hover:bg-red-500/30 transition-colors">✗</button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+              {matches.length === 0 && <tr><td colSpan={6} className="px-3 py-6 text-center text-muted-foreground">No matches yet</td></tr>}
+            </tbody>
+          </table>
+          <button onClick={fetchMatches} className="mt-4 text-xs text-amber-400 hover:text-amber-300 transition-colors">↻ Refresh</button>
+        </div>
+      )}
+    </div>
+  )
+}

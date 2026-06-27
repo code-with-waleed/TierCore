@@ -1,0 +1,389 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? 
+  access_token      String? 
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? 
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          String    @default("USER")
+  discordId     String?   @unique
+  discordName   String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts         Account[]
+  sessions         Session[]
+  players          Player[]
+  auditLogs        AuditLog[]
+  moderation       ModerationAction[]
+  apiKeys          ApiKey[]
+  submittedMatches Match[]         @relation("SubmittedMatches")
+  approvedMatches  Match[]         @relation("ApprovedMatches")
+}
+
+model Player {
+  id              String   @id @default(cuid())
+  userId          String?
+  username        String   @unique
+  discordId       String?
+  discordName     String?
+  avatarUrl       String?
+  points          Int      @default(0)
+  peakPoints      Int      @default(0)
+  earnings        Float    @default(0)
+  wins            Int      @default(0)
+  losses          Int      @default(0)
+  draws           Int      @default(0)
+  totalMatches    Int      @default(0)
+  winRate         Float    @default(0)
+  kdr             Float    @default(0)
+  currentTierId   String?
+  currentDivision Int      @default(1)
+  rank            Int?
+  peakRank        Int?
+  region          String?
+  ipAddress       String?
+  teamId          String?
+  isBanned        Boolean  @default(false)
+  isActive        Boolean  @default(true)
+  isMatchPlayer   Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user               User?              @relation(fields: [userId], references: [id])
+  currentTier        Tier?              @relation("PlayerTier", fields: [currentTierId], references: [id])
+  team               Team?              @relation(fields: [teamId], references: [id])
+  matchesAsPlayer1   Match[]            @relation("Player1")
+  matchesAsPlayer2   Match[]            @relation("Player2")
+  matchParticipants  MatchParticipant[]
+  flags              AntiCheatFlag[]
+  rankingHistory     RankingHistory[]
+  achievements       PlayerAchievement[]
+  seasonRecords      SeasonRecord[]
+  modeStats          PlayerModeStats[]
+
+  @@index([points])
+  @@index([rank])
+  @@index([region])
+}
+
+model PlayerModeStats {
+  id             String  @id @default(cuid())
+  playerId       String
+  mode           String
+  points         Int     @default(0)
+  peakPoints     Int     @default(0)
+  wins           Int     @default(0)
+  losses         Int     @default(0)
+  draws          Int     @default(0)
+  totalMatches   Int     @default(0)
+  currentTierId  String?
+  rank           Int?
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  tier   Tier?  @relation(fields: [currentTierId], references: [id])
+
+  @@unique([playerId, mode])
+  @@index([mode, points])
+  @@index([mode, rank])
+}
+
+model Tier {
+  id           String   @id @default(cuid())
+  key          String   @unique
+  name         String
+  shortName    String
+  displayOrder Int
+  minPoints    Int
+  maxPoints    Int
+  color        String
+  iconUrl      String?
+  isActive     Boolean  @default(true)
+  category     String   @default("LT")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  players       Player[]        @relation("PlayerTier")
+  modeStats     PlayerModeStats[]
+  promotions    PromotionRule[] @relation("PromotionFromTier")
+  demotions     PromotionRule[] @relation("DemotionToTier")
+  seasonTiers   SeasonTier[]
+  seasonRecords SeasonRecord[]
+
+  @@index([displayOrder])
+  @@index([category])
+}
+
+model PromotionRule {
+  id             String @id @default(cuid())
+  fromTierId     String
+  toTierId       String
+  minPoints       Int
+  requiredWins   Int    @default(3)
+  isDemotion     Boolean @default(false)
+  isActive       Boolean @default(true)
+
+  fromTier Tier @relation("PromotionFromTier", fields: [fromTierId], references: [id])
+  toTier   Tier @relation("DemotionToTier", fields: [toTierId], references: [id])
+
+  @@unique([fromTierId, toTierId])
+}
+
+model Match {
+  id             String      @id @default(cuid())
+  player1Id      String
+  player2Id      String
+  player1Points  Int
+  player2Points  Int
+  player1Score   Int?
+  player2Score   Int?
+  winner         String?
+  status         String   @default("PENDING")
+  mode           String      @default("sword")
+  submittedById  String?
+  approvedById   String?
+  approvedAt     DateTime?
+  rejectedReason String?
+  pointsChange   Int?
+  isDraw         Boolean     @default(false)
+  isRanked       Boolean     @default(true)
+  gameLength     Int?
+  server         String?
+  proof          String?
+  notes          String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  player1      Player            @relation("Player1", fields: [player1Id], references: [id])
+  player2      Player            @relation("Player2", fields: [player2Id], references: [id])
+  submittedBy  User?             @relation("SubmittedMatches", fields: [submittedById], references: [id])
+  approvedBy   User?             @relation("ApprovedMatches", fields: [approvedById], references: [id])
+  participants MatchParticipant[]
+
+  @@index([status])
+  @@index([player1Id])
+  @@index([player2Id])
+  @@index([createdAt])
+}
+
+model MatchParticipant {
+  id        String @id @default(cuid())
+  matchId   String
+  playerId  String
+  team      String?
+  isWinner  Boolean @default(false)
+  pointsBefore Int
+  pointsAfter  Int
+
+  match  Match  @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  player Player @relation(fields: [playerId], references: [id])
+
+  @@unique([matchId, playerId])
+}
+
+model RankingHistory {
+  id        String   @id @default(cuid())
+  playerId  String
+  points    Int
+  rank      Int?
+  tierId    String?
+  matchId   String?
+  reason    String?
+  createdAt DateTime @default(now())
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@index([playerId, createdAt])
+}
+
+model Season {
+  id            String   @id @default(cuid())
+  name          String
+  startDate     DateTime
+  endDate       DateTime
+  isActive      Boolean  @default(true)
+  isCompleted   Boolean  @default(false)
+  pointSoftReset Int    @default(0)
+  maxTierReset  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  seasonTiers SeasonTier[]
+  seasonRecords SeasonRecord[]
+
+  @@index([isActive])
+}
+
+model SeasonTier {
+  id        String @id @default(cuid())
+  seasonId  String
+  tierId    String
+  minPoints Int
+  maxPoints Int
+
+  season Season @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  tier   Tier   @relation(fields: [tierId], references: [id])
+
+  @@unique([seasonId, tierId])
+}
+
+model SeasonRecord {
+  id        String   @id @default(cuid())
+  playerId  String
+  seasonId  String
+  finalPoints Int
+  finalRank   Int?
+  peakPoints  Int
+  wins      Int      @default(0)
+  losses    Int      @default(0)
+  matches   Int      @default(0)
+  tierId    String?
+  createdAt DateTime @default(now())
+
+  player Player @relation(fields: [playerId], references: [id])
+  season Season @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  tier   Tier?  @relation(fields: [tierId], references: [id])
+
+  @@unique([playerId, seasonId])
+}
+
+model Team {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  tag       String   @unique
+  logo      String?
+  points    Int      @default(0)
+  wins      Int      @default(0)
+  losses    Int      @default(0)
+  rank      Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  players Player[]
+}
+
+model Achievement {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  name        String
+  description String
+  iconUrl     String?
+  category    String   @default("general")
+  isHidden    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  players PlayerAchievement[]
+}
+
+model PlayerAchievement {
+  id            String   @id @default(cuid())
+  playerId      String
+  achievementId String
+  unlockedAt    DateTime @default(now())
+
+  player      Player      @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id])
+
+  @@unique([playerId, achievementId])
+}
+
+model AntiCheatFlag {
+  id          String       @id @default(cuid())
+  playerId    String
+  flaggedBy   String?
+  reason      String
+  severity    String @default("MEDIUM")
+  evidence    String?
+  isResolved  Boolean      @default(false)
+  resolvedBy  String?
+  resolvedAt  DateTime?
+  createdAt   DateTime     @default(now())
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+}
+
+model ModerationAction {
+  id          String   @id @default(cuid())
+  moderatorId String
+  playerId    String?
+  matchId     String?
+  action      String
+  reason      String
+  duration    Int?
+  createdAt   DateTime @default(now())
+
+  moderatorUser User @relation(fields: [moderatorId], references: [id])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  entity    String?
+  entityId  String?
+  details   String?
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([createdAt])
+  @@index([action])
+}
+
+model Setting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+}
+
+model ApiKey {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  key       String   @unique
+  lastUsed  DateTime?
+  expiresAt DateTime?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
