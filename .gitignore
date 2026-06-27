@@ -3,6 +3,7 @@ node_modules/
 dist/
 .env
 .env.local
+discord-bot/applications.json
 *.log
 .DS_Store
 *.tsbuildinfo
