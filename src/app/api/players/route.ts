@@ -51,8 +51,8 @@ export async function GET(req: NextRequest) {
         })) : undefined,
       })),
     })
-  } catch {
-    return NextResponse.json({ data: [] })
+  } catch (error: any) {
+    return NextResponse.json({ data: [], error: error?.message ?? 'Failed to fetch players' })
   }
 }
 
@@ -140,7 +140,7 @@ export async function POST(req: NextRequest) {
     })
 
     return NextResponse.json({ data: player }, { status: 201 })
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to create player' }, { status: 500 })
+  } catch (error: any) {
+    return NextResponse.json({ error: error?.message ?? 'Failed to create player' }, { status: 500 })
   }
 }

@@ -23,7 +23,6 @@ export default function AdminPlayersPage() {
   const [addMode, setAddMode] = useState(modesNoOverall[0].id)
   const [addRegion, setAddRegion] = useState('NA')
   const [addPoints, setAddPoints] = useState('1')
-  const [addEarnings, setAddEarnings] = useState('0')
   const [addTier, setAddTier] = useState('')
   const [addError, setAddError] = useState('')
 
@@ -39,7 +38,6 @@ export default function AdminPlayersPage() {
   const [editPlayerLabel, setEditPlayerLabel] = useState('')
   const [editMode, setEditMode] = useState(modesNoOverall[0].id)
   const [editPoints, setEditPoints] = useState('1')
-  const [editEarnings, setEditEarnings] = useState('0')
   const [editTier, setEditTier] = useState('')
   const [editRegion, setEditRegion] = useState('NA')
 
@@ -84,7 +82,6 @@ export default function AdminPlayersPage() {
         mode: addMode,
         tierKey,
         points: parseInt(addPoints),
-        earnings: parseFloat(addEarnings) || 0,
       }),
     })
     if (r.ok) {
@@ -132,11 +129,6 @@ export default function AdminPlayersPage() {
       body: JSON.stringify({ mode: editMode, tierKey, points: parseInt(editPoints) || 0, region: editRegion }),
     })
     if (r.ok) {
-      await fetch(`/api/players/${editPlayerId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ earnings: parseFloat(editEarnings) || 0 }),
-      })
       setMsg('Player updated')
       setEditPlayerId(''); setEditPlayerLabel(''); setEditSearch(''); setEditTier('')
     } else { const e = await r.json(); setMsg(`Error: ${e.error}`) }
@@ -199,16 +191,12 @@ export default function AdminPlayersPage() {
                 <input type="number" min="0" value={addPoints} onChange={e => { setAddPoints(e.target.value); setAddTier('') }} className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm" />
               </div>
               <div>
-                <label className="block text-xs text-muted-foreground mb-1">Earnings ($)</label>
-                <input type="number" min="0" step="0.01" value={addEarnings} onChange={e => setAddEarnings(e.target.value)} className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm" />
+                <label className="block text-xs text-muted-foreground mb-1">Tier (optional)</label>
+                <select value={addTier} onChange={e => setAddTier(e.target.value)} className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm">
+                  <option value="">Auto ({getTierKeyForPoints(parseInt(addPoints) || 0).toUpperCase()})</option>
+                  {DEFAULT_TIERS.map(t => <option key={t.key} value={t.key}>{t.shortName}</option>)}
+                </select>
               </div>
-            </div>
-            <div>
-              <label className="block text-xs text-muted-foreground mb-1">Tier (optional)</label>
-              <select value={addTier} onChange={e => setAddTier(e.target.value)} className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm">
-                <option value="">Auto ({getTierKeyForPoints(parseInt(addPoints) || 0).toUpperCase()})</option>
-                {DEFAULT_TIERS.map(t => <option key={t.key} value={t.key}>{t.shortName}</option>)}
-              </select>
             </div>
             <button onClick={addPlayer} className="w-full rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-2 text-sm font-bold text-black hover:from-amber-400 hover:to-amber-500 transition-all hover-lift btn-press btn-shimmer btn-gradient-shift">
               Add Player
@@ -320,16 +308,12 @@ export default function AdminPlayersPage() {
                 <input type="number" min="0" value={editPoints} onChange={e => { setEditPoints(e.target.value); setEditTier('') }} className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm" />
               </div>
               <div>
-                <label className="block text-xs text-muted-foreground mb-1">Earnings ($)</label>
-                <input type="number" min="0" step="0.01" value={editEarnings} onChange={e => setEditEarnings(e.target.value)} className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm" />
-              </div>
-            </div>
-            <div>
-              <label className="block text-xs text-muted-foreground mb-1">Tier (optional)</label>
+                <label className="block text-xs text-muted-foreground mb-1">Tier (optional)</label>
                 <select value={editTier} onChange={e => setEditTier(e.target.value)} className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm">
                   <option value="">Auto ({getTierKeyForPoints(parseInt(editPoints) || 0).toUpperCase()})</option>
                   {DEFAULT_TIERS.map(t => <option key={t.key} value={t.key}>{t.shortName}</option>)}
                 </select>
+              </div>
             </div>
             <button onClick={editPlayer} className={`w-full rounded-lg px-4 py-2 text-sm font-bold transition-all btn-press ${editPlayerId ? 'bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30' : 'bg-blue-500/10 border border-blue-500/20 text-blue-400/50'}`}>
               Update Player
