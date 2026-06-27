@@ -41,21 +41,6 @@ export default function AdminPlayersPage() {
   const [editTier, setEditTier] = useState('')
   const [editRegion, setEditRegion] = useState('NA')
 
-  const [serverIp, setServerIp] = useState('play.tiercore.net')
-  const [serverIpInput, setServerIpInput] = useState('')
-
-  useEffect(() => {
-    fetchSettings()
-  }, [])
-
-  async function fetchSettings() {
-    try {
-      const r = await fetch('/api/settings')
-      const d = await r.json()
-      if (d.serverIp) { setServerIp(d.serverIp); setServerIpInput(d.serverIp) }
-    } catch {}
-  }
-
   async function searchPlayers(query: string, setResults: (r: any[]) => void) {
     if (!query || query.length < 1) { setResults([]); return }
     try {
@@ -132,17 +117,6 @@ export default function AdminPlayersPage() {
       setMsg('Player updated')
       setEditPlayerId(''); setEditPlayerLabel(''); setEditSearch(''); setEditTier('')
     } else { const e = await r.json(); setMsg(`Error: ${e.error}`) }
-  }
-
-  async function saveServerIp() {
-    if (!serverIpInput) return
-    const r = await fetch('/api/settings', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ serverIp: serverIpInput }),
-    })
-    if (r.ok) { setServerIp(serverIpInput); setMsg('Server IP updated') }
-    else { setMsg('Failed to update server IP') }
   }
 
   return (
@@ -322,27 +296,6 @@ export default function AdminPlayersPage() {
         </div>
       </div>
 
-      {/* Server IP Panel */}
-      <div className="rounded-xl border border-border/50 bg-card/50 p-6 animate-slide-up anim-delay-4">
-        <h2 className="font-bold text-lg mb-4">Minecraft Server IP</h2>
-        <div className="flex gap-3 items-end">
-          <div className="flex-1">
-            <label className="block text-xs text-muted-foreground mb-1">Server Address</label>
-            <input
-              value={serverIpInput}
-              onChange={e => setServerIpInput(e.target.value)}
-              placeholder="play.tiercore.net"
-              className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm font-mono focus:outline-none focus:border-amber-500/50"
-            />
-          </div>
-          <button onClick={saveServerIp} className="rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-2 text-sm font-bold text-black hover:from-amber-400 hover:to-amber-500 transition-all hover-lift btn-press btn-shimmer btn-gradient-shift">
-            Save
-          </button>
-        </div>
-        <p className="text-xs text-muted-foreground mt-2">
-          This IP is displayed at the top of every page. Currently: <span className="font-mono text-amber-400">{serverIp}</span>
-        </p>
-      </div>
     </div>
   )
 }
