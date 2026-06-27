@@ -6,6 +6,8 @@ import { GAME_MODES } from '@/lib/game-modes'
 
 export default function AdminSettingsPage() {
   const [tab, setTab] = useState<'tiers' | 'modes'>('tiers')
+  const [serverIp, setServerIp] = useState('')
+  const [saved, setSaved] = useState(false)
 
   useEffect(() => {
     fetchSettings()
@@ -15,12 +17,43 @@ export default function AdminSettingsPage() {
     try {
       const r = await fetch('/api/settings')
       const d = await r.json()
+      if (d.serverIp) setServerIp(d.serverIp)
+    } catch {}
+  }
+
+  async function saveServerIp() {
+    setSaved(false)
+    try {
+      const r = await fetch('/api/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ serverIp }),
+      })
+      if (r.ok) setSaved(true)
     } catch {}
   }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <h1 className="text-2xl font-black mb-6">Settings</h1>
+
+      {/* Server IP */}
+      <div className="mb-6 rounded-xl border border-border/50 bg-card/50 p-6 flex items-center justify-between gap-4 flex-wrap">
+        <div>
+          <h2 className="font-bold text-sm">Server IP</h2>
+          <p className="text-xs text-foreground/60 mt-0.5">Shown in the header copy button</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <input
+            value={serverIp}
+            onChange={e => { setServerIp(e.target.value); setSaved(false) }}
+            className="rounded-lg border border-border/50 bg-card px-3 py-2 text-sm w-56 focus:outline-none focus:border-amber-500/50"
+          />
+          <button onClick={saveServerIp} className="rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-2 text-sm font-bold text-black hover:from-amber-400 hover:to-amber-500 transition-all">
+            {saved ? 'Saved' : 'Save'}
+          </button>
+        </div>
+      </div>
 
       <div className="flex gap-2 mb-6">
         <button onClick={() => setTab('tiers')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${tab === 'tiers' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'bg-card border border-border/50 text-foreground/70'}`}>Tiers</button>
