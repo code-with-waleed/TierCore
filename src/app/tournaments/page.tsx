@@ -98,7 +98,7 @@ export default function TournamentsPage() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-amber-400 font-bold shrink-0">3.</span>
-                <span>In your ticket, include your <strong>in-game name (IGN)</strong> and <strong>ticket type</strong> (e.g. Solo, Duo, Squad)</span>
+                <span>In your ticket, include your <strong>in-game name (IGN)</strong> and <strong>ticket type</strong> (e.g. tournament)</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-amber-400 font-bold shrink-0">4.</span>
