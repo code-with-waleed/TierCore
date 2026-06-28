@@ -14,9 +14,10 @@ export async function GET() {
       prize1: config.prize1 ?? '',
       prize2: config.prize2 ?? '',
       prize3: config.prize3 ?? '',
+      totalTournaments: config.totalTournaments ?? 0,
     })
   } catch {
-    return NextResponse.json({ siteName: 'TierCore', version: '2.0.0', serverIp: 'play.tiercore.net', maintenanceMode: false, nextMatchDate: null, prize1: '', prize2: '', prize3: '' })
+    return NextResponse.json({ siteName: 'TierCore', version: '2.0.0', serverIp: 'play.tiercore.net', maintenanceMode: false, nextMatchDate: null, prize1: '', prize2: '', prize3: '', totalTournaments: 0 })
   }
 }
 
@@ -43,6 +44,9 @@ export async function PATCH(req: NextRequest) {
     }
     if (body.prize3 !== undefined) {
       config.prize3 = body.prize3
+    }
+    if (body.totalTournaments !== undefined) {
+      config.totalTournaments = body.totalTournaments
     }
 
     await prisma.setting.upsert({

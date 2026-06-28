@@ -9,6 +9,7 @@ export default function TournamentsPage() {
   const [prize1, setPrize1] = useState('')
   const [prize2, setPrize2] = useState('')
   const [prize3, setPrize3] = useState('')
+  const [totalTournaments, setTotalTournaments] = useState(0)
   const [activeTab, setActiveTab] = useState<'winners' | 'approved' | 'pending'>('winners')
   const [search, setSearch] = useState('')
 
@@ -32,6 +33,7 @@ export default function TournamentsPage() {
         if (d.prize1) setPrize1(d.prize1)
         if (d.prize2) setPrize2(d.prize2)
         if (d.prize3) setPrize3(d.prize3)
+        if (d.totalTournaments !== undefined) setTotalTournaments(d.totalTournaments)
       })
       .catch(() => {})
   }
@@ -59,6 +61,12 @@ export default function TournamentsPage() {
           </div>
         </div>
       )}
+
+      {/* Total Tournaments Badge */}
+      <div className="mb-6 flex items-center justify-center gap-2 text-sm text-foreground/70">
+        <span className="font-semibold text-amber-400">{totalTournaments}</span>
+        <span>Total Tournament{totalTournaments !== 1 ? 's' : ''} Completed</span>
+      </div>
 
       {/* Prizes + Leaderboard */}
       <div className="grid gap-6 lg:grid-cols-3 mb-8">
