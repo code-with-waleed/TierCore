@@ -12,7 +12,7 @@ const navLinks = [
   { href: '/tournaments', label: 'Tournaments' },
 ]
 
-function NavLink({ href, label, pathname }: { href: string; label: string; pathname: string }) {
+function NavLink({ href, label, pathname, mobile, onClick }: { href: string; label: string; pathname: string; mobile?: boolean; onClick?: () => void }) {
   const isActive = href === '/ranking/sword'
     ? pathname.startsWith('/ranking/')
     : pathname === href
@@ -20,15 +20,18 @@ function NavLink({ href, label, pathname }: { href: string; label: string; pathn
   return (
     <Link
       href={href}
+      onClick={onClick}
       className={cn(
-        'relative px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-medium transition-all duration-200 rounded-lg whitespace-nowrap',
+        mobile
+          ? 'block px-4 py-3 text-sm font-medium rounded-lg transition-colors'
+          : 'relative px-3 py-1.5 text-sm font-medium transition-all duration-200 rounded-lg',
         isActive
-          ? 'text-amber-400'
-          : 'text-muted-foreground hover:text-foreground'
+          ? mobile ? 'text-amber-400 bg-amber-500/10' : 'text-amber-400'
+          : mobile ? 'text-muted-foreground hover:text-foreground hover:bg-white/5' : 'text-muted-foreground hover:text-foreground'
       )}
     >
       {label}
-      {isActive && (
+      {isActive && !mobile && (
         <span className="absolute inset-x-2 -bottom-px h-0.5 bg-gradient-to-r from-amber-500/80 to-yellow-500/80 rounded-full" />
       )}
     </Link>
@@ -39,6 +42,11 @@ export function Header() {
   const pathname = usePathname()
   const [serverIp, setServerIp] = useState('play.tiercore.net')
   const [copied, setCopied] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  useEffect(() => {
+    setMenuOpen(false)
+  }, [pathname])
 
   useEffect(() => {
     fetch('/api/settings')
@@ -56,6 +64,15 @@ export function Header() {
     }).catch(() => {})
   }, [serverIp])
 
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [menuOpen])
+
   return (
     <header className="sticky top-0 z-50 bg-[#0a080b]/70 backdrop-blur-2xl border-b border-white/5">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
@@ -72,8 +89,8 @@ export function Header() {
             </span>
           </Link>
 
-          {/* Nav */}
-          <nav className="flex items-center gap-0.5 overflow-x-auto scrollbar-none">
+          {/* Desktop nav */}
+          <nav className="hidden items-center gap-0.5 md:flex">
             {navLinks.map(link => (
               <NavLink key={link.href} href={link.href} label={link.label} pathname={pathname} />
             ))}
@@ -84,14 +101,13 @@ export function Header() {
           {/* Server IP */}
           <button
             onClick={handleCopy}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-amber-500/15 bg-amber-500/6 px-2 py-1 text-[10px] sm:text-[11px] font-medium text-amber-400/70 hover:text-amber-400 hover:bg-amber-500/12 hover:border-amber-500/25 transition-all cursor-pointer"
+            className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-amber-500/15 bg-amber-500/6 px-2.5 py-1 text-[11px] font-medium text-amber-400/70 hover:text-amber-400 hover:bg-amber-500/12 hover:border-amber-500/25 transition-all cursor-pointer"
             title="Click to copy server IP"
           >
             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
             </svg>
-            <span className="hidden sm:inline">{copied ? 'Copied!' : serverIp}</span>
-            <span className="sm:hidden">{copied ? '✓' : 'IP'}</span>
+            {copied ? 'Copied!' : serverIp}
           </button>
 
           {/* Discord */}
@@ -107,8 +123,47 @@ export function Header() {
             </svg>
           </a>
 
+          {/* Hamburger button */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="flex md:hidden h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"
+            aria-label="Toggle menu"
+          >
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              {menuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
         </div>
       </div>
+
+      {/* Mobile menu backdrop + drawer */}
+      {menuOpen && (
+        <div className="fixed inset-0 top-14 z-40 md:hidden">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMenuOpen(false)} />
+          <div className="absolute right-0 top-0 h-full w-64 max-w-[75vw] bg-[#0a080b] border-l border-white/5 p-4 animate-slide-in-right shadow-2xl">
+            <nav className="flex flex-col gap-1 pt-2">
+              {navLinks.map(link => (
+                <NavLink key={link.href} href={link.href} label={link.label} pathname={pathname} mobile onClick={() => setMenuOpen(false)} />
+              ))}
+            </nav>
+            <div className="mt-6 border-t border-white/5 pt-4">
+              <button
+                onClick={() => { handleCopy(); setMenuOpen(false) }}
+                className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground rounded-lg transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                </svg>
+                {copied ? 'Copied!' : serverIp}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   )
 }
