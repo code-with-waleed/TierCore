@@ -12,20 +12,10 @@ export default function TournamentsPage() {
   const [prize2, setPrize2] = useState('')
   const [prize3, setPrize3] = useState('')
   const [activeTab, setActiveTab] = useState<'approved' | 'pending' | 'winners'>('winners')
-  const [isAdmin, setIsAdmin] = useState(false)
-  const [clearConfirm, setClearConfirm] = useState(false)
 
   useEffect(() => {
-    checkAdmin()
     fetchData()
   }, [])
-
-  async function checkAdmin() {
-    try {
-      const r = await fetch('/api/auth/check')
-      if (r.ok) setIsAdmin(true)
-    } catch {}
-  }
 
   async function fetchData() {
     fetch('/api/tournament/entries')
@@ -45,13 +35,6 @@ export default function TournamentsPage() {
         if (d.prize3) setPrize3(d.prize3)
       })
       .catch(() => {})
-  }
-
-  async function clearAll() {
-    try {
-      const r = await fetch('/api/tournament/entries', { method: 'DELETE' })
-      if (r.ok) { setEntries([]); setClearConfirm(false) }
-    } catch {}
   }
 
   const winners = entries.filter(e => e.status === 'winner').sort((a: any, b: any) => (b.earnings ?? 0) - (a.earnings ?? 0))
@@ -156,22 +139,9 @@ export default function TournamentsPage() {
                 <h2 className="font-bold text-sm">
                   {activeTab === 'winners' ? 'Tournament Winners' : activeTab === 'approved' ? 'Approved Players' : 'Pending Applications'}
                 </h2>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs text-foreground/60">
-                    {activeTab === 'winners' ? winners.length : activeTab === 'approved' ? approved.length : pending.length} players
-                  </span>
-                  {isAdmin && (
-                    clearConfirm ? (
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] text-red-400">Confirm clear?</span>
-                        <button onClick={clearAll} className="text-[10px] text-red-400 font-bold hover:text-red-300">Yes</button>
-                        <button onClick={() => setClearConfirm(false)} className="text-[10px] text-foreground/60 hover:text-foreground">No</button>
-                      </div>
-                    ) : (
-                      <button onClick={() => setClearConfirm(true)} className="text-[10px] text-red-400 hover:text-red-300">Clear All</button>
-                    )
-                  )}
-                </div>
+                <span className="text-xs text-foreground/60">
+                  {activeTab === 'winners' ? winners.length : activeTab === 'approved' ? approved.length : pending.length} players
+                </span>
               </div>
               {activeTab === 'winners' && (
                 winners.length === 0 ? (
