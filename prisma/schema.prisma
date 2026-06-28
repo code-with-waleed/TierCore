@@ -384,6 +384,7 @@ model TournamentEntry {
   status      String   @default("pending")
   earnings    Float    @default(0)
   points      Int      @default(0)
+  reward      String   @default("")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

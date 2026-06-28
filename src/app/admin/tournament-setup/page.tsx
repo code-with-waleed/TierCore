@@ -20,10 +20,10 @@ export default function AdminTournamentSetup() {
   const [addUsername, setAddUsername] = useState('')
   const [addDiscord, setAddDiscord] = useState('')
   const [addTier, setAddTier] = useState('')
-  const [addEarnings, setAddEarnings] = useState('0')
   const [addPoints, setAddPoints] = useState('0')
+  const [addReward, setAddReward] = useState('')
 
-  const [approveEarnings, setApproveEarnings] = useState<Record<string, string>>({})
+  const [approveRewards, setApproveRewards] = useState<Record<string, string>>({})
   const [approvePoints, setApprovePoints] = useState<Record<string, string>>({})
 
   const [pendingSearch, setPendingSearch] = useState('')
@@ -53,13 +53,13 @@ export default function AdminTournamentSetup() {
       const r = await fetch('/api/tournament/entries')
       const d = await r.json()
       setEntries(d.data ?? [])
-      const earnings: Record<string, string> = {}
+      const rewards: Record<string, string> = {}
       const points: Record<string, string> = {}
       ;(d.data ?? []).forEach((e: any) => {
-        earnings[e.id] = String(e.earnings ?? '0')
+        rewards[e.id] = e.reward ?? ''
         points[e.id] = String(e.points ?? '0')
       })
-      setApproveEarnings(earnings)
+      setApproveRewards(rewards)
       setApprovePoints(points)
     } catch {}
     setLoading(false)
@@ -86,14 +86,14 @@ export default function AdminTournamentSetup() {
         username: addUsername.trim(),
         discordName: addDiscord.trim() || undefined,
         tier: addTier || undefined,
-        earnings: parseFloat(addEarnings) || 0,
         points: parseInt(addPoints) || 0,
+        reward: addReward.trim() || undefined,
         status: 'pending',
       }),
     })
     if (r.ok) {
       setMsg(`Added ${addUsername} (pending)!`)
-      setAddUsername(''); setAddDiscord(''); setAddTier(''); setAddEarnings('0'); setAddPoints('0')
+      setAddUsername(''); setAddDiscord(''); setAddTier(''); setAddPoints('0'); setAddReward('')
       fetchAll()
     } else {
       const d = await r.json()
@@ -113,8 +113,8 @@ export default function AdminTournamentSetup() {
 
   async function markWinner(id: string) {
     const pts = parseInt(approvePoints[id]) || 0
-    const earn = parseFloat(approveEarnings[id]) || 0
-    await updateEntry(id, { status: 'winner', points: pts, earnings: earn })
+    const reward = approveRewards[id] ?? ''
+    await updateEntry(id, { status: 'winner', points: pts, reward })
     setWinnerInputs(prev => ({ ...prev, [id]: false }))
   }
 
@@ -215,7 +215,7 @@ export default function AdminTournamentSetup() {
             <div className="grid grid-cols-3 gap-3">
               <input value={addTier} onChange={e => setAddTier(e.target.value)} placeholder="Tier" className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm focus:outline-none focus:border-amber-500/50" />
               <input type="number" value={addPoints} onChange={e => setAddPoints(e.target.value)} placeholder="Points" className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm focus:outline-none focus:border-amber-500/50" />
-              <input type="number" step="0.01" value={addEarnings} onChange={e => setAddEarnings(e.target.value)} placeholder="$ Prize" className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm focus:outline-none focus:border-amber-500/50" />
+              <input value={addReward} onChange={e => setAddReward(e.target.value)} placeholder="Reward (e.g. $50 + Sword)" className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm focus:outline-none focus:border-amber-500/50" />
             </div>
             <button onClick={addEntry} className="w-full rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-2 text-sm font-bold text-black hover:from-amber-400 hover:to-amber-500 transition-all">
               Add to Pending
@@ -226,7 +226,6 @@ export default function AdminTournamentSetup() {
         {/* Pending Applications */}
         <div className="rounded-xl border border-border/50 bg-card/50 p-6">
           <h2 className="font-bold text-lg mb-4">Pending Applications ({pending.length})</h2>
-          {/* Search */}
           <input
             value={pendingSearch}
             onChange={e => setPendingSearch(e.target.value)}
@@ -253,7 +252,7 @@ export default function AdminTournamentSetup() {
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <input type="number" value={approvePoints[e.id] ?? '0'} onChange={e2 => setApprovePoints(prev => ({ ...prev, [e.id]: e2.target.value }))} className="w-full rounded border border-amber-500/50 bg-card px-2 py-1.5 text-xs font-mono focus:outline-none focus:border-amber-500" placeholder="Tournament Points" />
-                        <input type="number" step="0.01" value={approveEarnings[e.id] ?? '0'} onChange={e2 => setApproveEarnings(prev => ({ ...prev, [e.id]: e2.target.value }))} className="w-full rounded border border-amber-500/50 bg-card px-2 py-1.5 text-xs font-mono focus:outline-none focus:border-amber-500" placeholder="Prize $" />
+                        <input value={approveRewards[e.id] ?? ''} onChange={e2 => setApproveRewards(prev => ({ ...prev, [e.id]: e2.target.value }))} className="w-full rounded border border-amber-500/50 bg-card px-2 py-1.5 text-xs focus:outline-none focus:border-amber-500" placeholder="Reward (e.g. $50 + Sword)" />
                       </div>
                       <div className="flex items-center gap-2">
                         <button onClick={() => markWinner(e.id)} className="flex-1 rounded-md bg-purple-500/30 border border-purple-500/40 px-2.5 py-1.5 text-xs font-bold text-purple-400 hover:bg-purple-500/40 transition-all">Confirm Winner</button>
@@ -262,7 +261,7 @@ export default function AdminTournamentSetup() {
                     </div>
                   ) : (
                     <div className="flex items-center gap-2">
-                      <button onClick={() => updateEntry(e.id, { status: 'approved', earnings: parseFloat(approveEarnings[e.id]) || 0, points: parseInt(approvePoints[e.id]) || 0 })} className="rounded-md bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-1 text-xs font-medium text-emerald-400 hover:bg-emerald-500/30 transition-all">Approve</button>
+                      <button onClick={() => updateEntry(e.id, { status: 'approved', points: parseInt(approvePoints[e.id]) || 0, reward: approveRewards[e.id] || '' })} className="rounded-md bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-1 text-xs font-medium text-emerald-400 hover:bg-emerald-500/30 transition-all">Approve</button>
                       <button onClick={() => updateEntry(e.id, { status: 'rejected' })} className="rounded-md bg-red-500/20 border border-red-500/30 px-2.5 py-1 text-xs font-medium text-red-400 hover:bg-red-500/30 transition-all">Reject</button>
                       <button onClick={() => setWinnerInputs(prev => ({ ...prev, [e.id]: true }))} className="rounded-md bg-purple-500/20 border border-purple-500/30 px-2.5 py-1 text-xs font-medium text-purple-400 hover:bg-purple-500/30 transition-all">Winner</button>
                       <button onClick={() => deleteEntry(e.id)} className="text-[10px] text-foreground/50 hover:text-red-400 ml-auto">✕</button>
@@ -293,8 +292,8 @@ export default function AdminTournamentSetup() {
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     <input type="number" value={approvePoints[e.id] ?? e.points} onChange={e2 => setApprovePoints(prev => ({ ...prev, [e.id]: e2.target.value }))} className="w-14 rounded border border-border/50 bg-card px-1.5 py-1 text-xs font-mono text-right focus:outline-none focus:border-amber-500/50" title="Points" />
-                    <input type="number" step="0.01" value={approveEarnings[e.id] ?? e.earnings} onChange={e2 => setApproveEarnings(prev => ({ ...prev, [e.id]: e2.target.value }))} className="w-16 rounded border border-border/50 bg-card px-1.5 py-1 text-xs font-mono text-right focus:outline-none focus:border-amber-500/50" title="Earnings $" />
-                    <button onClick={() => updateEntry(e.id, { earnings: parseFloat(approveEarnings[e.id]) || 0, points: parseInt(approvePoints[e.id]) || 0 })} className="rounded-md bg-amber-500/20 border border-amber-500/30 px-2 py-1 text-xs font-medium text-amber-400 hover:bg-amber-500/30 transition-all" title="Save">Save</button>
+                    <input value={approveRewards[e.id] ?? e.reward} onChange={e2 => setApproveRewards(prev => ({ ...prev, [e.id]: e2.target.value }))} className="w-24 rounded border border-border/50 bg-card px-1.5 py-1 text-xs focus:outline-none focus:border-amber-500/50" title="Reward" placeholder="Reward" />
+                    <button onClick={() => updateEntry(e.id, { points: parseInt(approvePoints[e.id]) || 0, reward: approveRewards[e.id] || '' })} className="rounded-md bg-amber-500/20 border border-amber-500/30 px-2 py-1 text-xs font-medium text-amber-400 hover:bg-amber-500/30 transition-all" title="Save">Save</button>
                     <button onClick={() => updateEntry(e.id, { status: 'pending' })} className="rounded-md bg-yellow-500/20 border border-yellow-500/30 px-2 py-1 text-xs font-medium text-yellow-400 hover:bg-yellow-500/30 transition-all" title="Move to pending">↩</button>
                     <button onClick={() => deleteEntry(e.id)} className="rounded-md bg-red-500/20 border border-red-500/30 px-2 py-1 text-xs font-medium text-red-400 hover:bg-red-500/30 transition-all">✕</button>
                   </div>
@@ -318,7 +317,7 @@ export default function AdminTournamentSetup() {
                   </div>
                   <div className="flex items-center gap-3 text-xs">
                     <span className="text-purple-400 font-mono font-bold">{e.points} pts</span>
-                    <span className="text-emerald-400 font-mono font-bold">${(e.earnings ?? 0).toFixed(2)}</span>
+                    <span className="text-emerald-400 font-medium">{e.reward || `$${(e.earnings ?? 0).toFixed(2)}`}</span>
                     <button onClick={() => deleteEntry(e.id)} className="text-[10px] text-red-400 hover:text-red-300">✕</button>
                   </div>
                 </div>

@@ -1,8 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { getCombatRankFromPoints } from '@/lib/points'
-import { RANK_EMBLEMS } from '@/lib/rank-emblems'
 
 export default function TournamentsPage() {
   const [entries, setEntries] = useState<any[]>([])
@@ -11,7 +9,8 @@ export default function TournamentsPage() {
   const [prize1, setPrize1] = useState('')
   const [prize2, setPrize2] = useState('')
   const [prize3, setPrize3] = useState('')
-  const [activeTab, setActiveTab] = useState<'approved' | 'pending' | 'winners'>('winners')
+  const [activeTab, setActiveTab] = useState<'winners' | 'approved' | 'pending'>('winners')
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     fetchData()
@@ -40,6 +39,11 @@ export default function TournamentsPage() {
   const winners = entries.filter(e => e.status === 'winner').sort((a: any, b: any) => (b.earnings ?? 0) - (a.earnings ?? 0))
   const approved = entries.filter(e => e.status === 'approved').sort((a: any, b: any) => (b.earnings ?? 0) - (a.earnings ?? 0))
   const pending = entries.filter(e => e.status === 'pending')
+
+  const currentList = activeTab === 'winners' ? winners : activeTab === 'approved' ? approved : pending
+  const filtered = currentList.filter(e =>
+    e.username.toLowerCase().includes(search.toLowerCase())
+  )
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
@@ -126,6 +130,14 @@ export default function TournamentsPage() {
             </button>
           </div>
 
+          {/* Search */}
+          <input
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Search by player name..."
+            className="w-full rounded-lg border border-border/50 bg-card/50 px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500/40"
+          />
+
           {/* Table */}
           {loading ? (
             <div className="space-y-2">
@@ -139,13 +151,12 @@ export default function TournamentsPage() {
                 <h2 className="font-bold text-sm">
                   {activeTab === 'winners' ? 'Tournament Winners' : activeTab === 'approved' ? 'Approved Players' : 'Pending Applications'}
                 </h2>
-                <span className="text-xs text-foreground/60">
-                  {activeTab === 'winners' ? winners.length : activeTab === 'approved' ? approved.length : pending.length} players
-                </span>
+                <span className="text-xs text-foreground/60">{filtered.length} players</span>
               </div>
+
               {activeTab === 'winners' && (
-                winners.length === 0 ? (
-                  <div className="text-center py-16 text-foreground/50">No winners yet</div>
+                filtered.length === 0 ? (
+                  <div className="text-center py-16 text-foreground/50">{search ? 'No winners match your search' : 'No winners yet'}</div>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
@@ -153,46 +164,34 @@ export default function TournamentsPage() {
                         <tr className="border-b border-border/30">
                           <th className="px-4 py-2.5 text-left font-semibold text-foreground/70 w-10">#</th>
                           <th className="px-4 py-2.5 text-left font-semibold text-foreground/70">Player</th>
-                          <th className="px-4 py-2.5 text-center font-semibold text-foreground/70 hidden sm:table-cell">Rank</th>
                           <th className="px-4 py-2.5 text-center font-semibold text-foreground/70">Tier</th>
                           <th className="px-4 py-2.5 text-center font-semibold text-foreground/70">Points</th>
-                          <th className="px-4 py-2.5 text-right font-semibold text-foreground/70">Earnings</th>
+                          <th className="px-4 py-2.5 text-right font-semibold text-foreground/70">Reward</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {winners.map((e: any, i: number) => {
-                          const rankInfo = getCombatRankFromPoints(e.points ?? 0)
-                          const Emblem = rankInfo ? RANK_EMBLEMS[rankInfo.key] : null
-                          return (
-                            <tr key={e.id} className="border-b border-purple-500/20 bg-purple-500/5 transition-colors hover:bg-purple-500/10">
-                              <td className="px-4 py-3">
-                                <span className="text-sm">{['🥇','🥈','🥉'][i] || '🏅'}</span>
-                              </td>
-                              <td className="px-4 py-3 font-medium">{e.username}</td>
-                              <td className="px-4 py-3 text-center hidden sm:table-cell">
-                                {Emblem && (
-                                  <div className="inline-flex items-center gap-1.5" title={`${rankInfo.name} (${e.points ?? 0} pts)`}>
-                                    <Emblem size={20} />
-                                    <span className="text-[10px] font-bold text-foreground/60">{rankInfo.name}</span>
-                                  </div>
-                                )}
-                              </td>
-                              <td className="px-4 py-3 text-center">
-                                <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-white/5 text-foreground/80">{e.tier}</span>
-                              </td>
-                              <td className="px-4 py-3 text-center font-mono font-bold text-purple-400">{e.points ?? 0}</td>
-                              <td className="px-4 py-3 text-right font-mono font-bold text-emerald-400">${(e.earnings ?? 0).toFixed(2)}</td>
-                            </tr>
-                          )
-                        })}
+                        {filtered.map((e: any, i: number) => (
+                          <tr key={e.id} className="border-b border-purple-500/20 bg-purple-500/5 transition-colors hover:bg-purple-500/10">
+                            <td className="px-4 py-3">
+                              <span className="text-sm">{['🥇','🥈','🥉'][i] || '🏅'}</span>
+                            </td>
+                            <td className="px-4 py-3 font-medium">{e.username}</td>
+                            <td className="px-4 py-3 text-center">
+                              <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-white/5 text-foreground/80">{e.tier}</span>
+                            </td>
+                            <td className="px-4 py-3 text-center font-mono font-bold text-purple-400">{e.points ?? 0}</td>
+                            <td className="px-4 py-3 text-right font-medium text-emerald-400">{e.reward || `$${(e.earnings ?? 0).toFixed(2)}`}</td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
                   </div>
                 )
               )}
+
               {activeTab === 'approved' && (
-                approved.length === 0 ? (
-                  <div className="text-center py-16 text-foreground/50">No approved players yet</div>
+                filtered.length === 0 ? (
+                  <div className="text-center py-16 text-foreground/50">{search ? 'No approved players match your search' : 'No approved players yet'}</div>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
@@ -200,42 +199,32 @@ export default function TournamentsPage() {
                         <tr className="border-b border-border/30">
                           <th className="px-4 py-2.5 text-left font-semibold text-foreground/70 w-10">#</th>
                           <th className="px-4 py-2.5 text-left font-semibold text-foreground/70">Player</th>
-                          <th className="px-4 py-2.5 text-center font-semibold text-foreground/70 hidden sm:table-cell">Rank</th>
                           <th className="px-4 py-2.5 text-center font-semibold text-foreground/70">Tier</th>
-                          <th className="px-4 py-2.5 text-right font-semibold text-foreground/70">Earnings</th>
+                          <th className="px-4 py-2.5 text-center font-semibold text-foreground/70">Points</th>
+                          <th className="px-4 py-2.5 text-right font-semibold text-foreground/70">Reward</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {approved.map((e: any, i: number) => {
-                          const rankInfo = getCombatRankFromPoints(e.points ?? 0)
-                          const Emblem = rankInfo ? RANK_EMBLEMS[rankInfo.key] : null
-                          return (
-                            <tr key={e.id} className="border-b border-border/30 transition-colors hover:bg-accent/20">
-                              <td className="px-4 py-3 text-xs font-bold text-foreground/60">{i + 1}</td>
-                              <td className="px-4 py-3 font-medium">{e.username}</td>
-                              <td className="px-4 py-3 text-center hidden sm:table-cell">
-                                {Emblem && (
-                                  <div className="inline-flex items-center gap-1.5">
-                                    <Emblem size={20} />
-                                    <span className="text-[10px] font-bold text-foreground/60">{rankInfo.name}</span>
-                                  </div>
-                                )}
-                              </td>
-                              <td className="px-4 py-3 text-center">
-                                <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-white/5 text-foreground/80">{e.tier}</span>
-                              </td>
-                              <td className="px-4 py-3 text-right font-mono font-bold text-emerald-400">${(e.earnings ?? 0).toFixed(2)}</td>
-                            </tr>
-                          )
-                        })}
+                        {filtered.map((e: any, i: number) => (
+                          <tr key={e.id} className="border-b border-border/30 transition-colors hover:bg-accent/20">
+                            <td className="px-4 py-3 text-xs font-bold text-foreground/60">{i + 1}</td>
+                            <td className="px-4 py-3 font-medium">{e.username}</td>
+                            <td className="px-4 py-3 text-center">
+                              <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-white/5 text-foreground/80">{e.tier}</span>
+                            </td>
+                            <td className="px-4 py-3 text-center font-mono font-bold text-foreground/70">{e.points ?? 0}</td>
+                            <td className="px-4 py-3 text-right font-medium text-emerald-400">{e.reward || `$${(e.earnings ?? 0).toFixed(2)}`}</td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
                   </div>
                 )
               )}
+
               {activeTab === 'pending' && (
-                pending.length === 0 ? (
-                  <div className="text-center py-16 text-foreground/50">No pending applications</div>
+                filtered.length === 0 ? (
+                  <div className="text-center py-16 text-foreground/50">{search ? 'No pending applications match your search' : 'No pending applications'}</div>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
@@ -248,7 +237,7 @@ export default function TournamentsPage() {
                         </tr>
                       </thead>
                       <tbody>
-                        {pending.map((e: any) => (
+                        {filtered.map((e: any) => (
                           <tr key={e.id} className="border-b border-border/30 transition-colors hover:bg-accent/20">
                             <td className="px-4 py-3 font-medium">{e.username}</td>
                             <td className="px-4 py-3 text-center hidden sm:table-cell text-foreground/60 text-xs">{e.discordName || '—'}</td>
