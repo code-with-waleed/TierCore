@@ -103,18 +103,14 @@ export default function TournamentContent({ tab }: { tab: 'winners' | 'approved'
             <ol className="space-y-2 text-sm text-foreground/80">
               <li className="flex items-start gap-2">
                 <span className="text-amber-400 font-bold shrink-0">1.</span>
-                <span>Join our <a href="https://discord.gg/7J8jSHedS5" target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:text-indigo-300 underline">Discord server</a></span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-amber-400 font-bold shrink-0">2.</span>
                 <span>Create a ticket in the <strong># 🎫︱ᴛᴏᴜʀɴᴀᴍᴇɴᴛ-ᴛɪᴄᴋᴇᴛ</strong> channel to apply for the tournament</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-amber-400 font-bold shrink-0">3.</span>
+                <span className="text-amber-400 font-bold shrink-0">2.</span>
                 <span>In your ticket, include your <strong>in-game name (IGN)</strong> and <strong>ticket type</strong> (e.g. tournament)</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-amber-400 font-bold shrink-0">4.</span>
+                <span className="text-amber-400 font-bold shrink-0">3.</span>
                 <span>Wait for staff to approve your entry — you will see your name on the leaderboard once approved</span>
               </li>
             </ol>
@@ -226,7 +222,6 @@ export default function TournamentContent({ tab }: { tab: 'winners' | 'approved'
                       <thead>
                         <tr className="border-b border-border/30">
                           <th className="px-4 py-2.5 text-left font-semibold text-foreground/70">Player</th>
-                          <th className="px-4 py-2.5 text-center font-semibold text-foreground/70 hidden sm:table-cell">Discord</th>
                           <th className="px-4 py-2.5 text-right font-semibold text-foreground/70">Applied</th>
                         </tr>
                       </thead>
@@ -234,7 +229,6 @@ export default function TournamentContent({ tab }: { tab: 'winners' | 'approved'
                         {filtered.map((e: any) => (
                           <tr key={e.id} className="border-b border-border/30 transition-colors hover:bg-accent/20">
                             <td className="px-4 py-3 font-medium">{e.username}</td>
-                            <td className="px-4 py-3 text-center hidden sm:table-cell text-foreground/60 text-xs">{e.discordName || '—'}</td>
                             <td className="px-4 py-3 text-right text-xs text-foreground/50">{new Date(e.createdAt).toLocaleDateString()}</td>
                           </tr>
                         ))}
