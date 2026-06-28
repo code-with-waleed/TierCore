@@ -69,7 +69,7 @@ export default function MagneticButton({
     return <div onClick={onClick} style={{ cursor: onClick ? 'pointer' : undefined }}>{child}</div>
   }
   return (
-    <button type={type} onClick={onClick} disabled={disabled} style={{ display: 'block', width: '100%', background: 'none', border: 'none', padding: 0, cursor: disabled ? 'default' : 'pointer' }}>
+    <button type={type} onClick={onClick} disabled={disabled} style={{ display: 'inline-flex', background: 'none', border: 'none', padding: 0, cursor: disabled ? 'default' : 'pointer' }}>
       {child}
     </button>
   )
