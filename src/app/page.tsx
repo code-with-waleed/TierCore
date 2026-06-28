@@ -8,23 +8,23 @@ import MagneticButton from '@/components/ui/MagneticButton'
 
 export default function HomePage() {
   const [playerCount, setPlayerCount] = useState(0)
-  const [matchCount, setMatchCount] = useState(0)
+  const [totalTournaments, setTotalTournaments] = useState(0)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchStats() {
       try {
-        const [playersRes, matchesRes] = await Promise.all([
+        const [playersRes, settingsRes] = await Promise.all([
           fetch('/api/players'),
-          fetch('/api/matches'),
+          fetch('/api/settings'),
         ])
         const players = await playersRes.json()
-        const matches = await matchesRes.json()
+        const settings = await settingsRes.json()
         setPlayerCount(players.data?.length ?? 0)
-        setMatchCount(matches.data?.length ?? 0)
+        setTotalTournaments(settings.totalTournaments ?? 0)
       } catch {
         setPlayerCount(0)
-        setMatchCount(0)
+        setTotalTournaments(0)
       } finally {
         setLoading(false)
       }
@@ -90,7 +90,7 @@ export default function HomePage() {
             <div className="text-sm text-muted-foreground mt-1">Active Players</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-black text-gradient-gold">{loading ? <span className="animate-skeleton">...</span> : matchCount}</div>
+            <div className="text-3xl font-black text-gradient-gold">{loading ? <span className="animate-skeleton">...</span> : totalTournaments}</div>
                 <div className="text-sm text-muted-foreground mt-1">Total Tournaments</div>
           </div>
         </div>
