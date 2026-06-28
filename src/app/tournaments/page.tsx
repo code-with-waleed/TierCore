@@ -94,11 +94,11 @@ export default function TournamentsPage() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-amber-400 font-bold shrink-0">2.</span>
-                <span>Create a ticket in the <strong>#create-ticket</strong> channel to apply for the tournament</span>
+                <span>Create a ticket in the <strong># 🎫︱ᴛᴏᴜʀɴᴀᴍᴇɴᴛ-ᴛɪᴄᴋᴇᴛ</strong> channel to apply for the tournament</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-amber-400 font-bold shrink-0">3.</span>
-                <span>Mention your ticket ID in your application so staff can review it</span>
+                <span>In your ticket, include your <strong>in-game name (IGN)</strong> and <strong>ticket type</strong> (e.g. Solo, Duo, Squad)</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-amber-400 font-bold shrink-0">4.</span>
