@@ -283,10 +283,7 @@ export default function AdminTournamentSetup() {
                   <div className="min-w-0">
                     <span className="font-medium text-sm truncate">{e.username}</span>
                   </div>
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <input type="number" value={approvePoints[e.id] ?? e.points} onChange={e2 => setApprovePoints(prev => ({ ...prev, [e.id]: e2.target.value }))} className="w-14 rounded border border-border/50 bg-card px-1.5 py-1 text-xs font-mono text-right focus:outline-none focus:border-amber-500/50" title="Points" />
-                    <input value={approveRewards[e.id] ?? e.reward} onChange={e2 => setApproveRewards(prev => ({ ...prev, [e.id]: e2.target.value }))} className="w-20 sm:w-24 rounded border border-border/50 bg-card px-1.5 py-1 text-xs focus:outline-none focus:border-amber-500/50" title="Reward" placeholder="Reward" />
-                    <button onClick={() => updateEntry(e.id, { points: parseInt(approvePoints[e.id]) || 0, reward: approveRewards[e.id] || '' })} className="rounded-md bg-amber-500/20 border border-amber-500/30 px-2 py-1 text-xs font-medium text-amber-400 hover:bg-amber-500/30 transition-all" title="Save">Save</button>
+                  <div className="flex items-center gap-1.5">
                     <button onClick={() => updateEntry(e.id, { status: 'pending' })} className="rounded-md bg-yellow-500/20 border border-yellow-500/30 px-2 py-1 text-xs font-medium text-yellow-400 hover:bg-yellow-500/30 transition-all" title="Move to pending">↩</button>
                     <button onClick={() => deleteEntry(e.id)} className="rounded-md bg-red-500/20 border border-red-500/30 px-2 py-1 text-xs font-medium text-red-400 hover:bg-red-500/30 transition-all">✕</button>
                   </div>
