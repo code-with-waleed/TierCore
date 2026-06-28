@@ -12,6 +12,11 @@ export default function AdminTournamentSetup() {
   const [savingDate, setSavingDate] = useState(false)
   const [dateMsg, setDateMsg] = useState('')
 
+  const [prize1, setPrize1] = useState('')
+  const [prize2, setPrize2] = useState('')
+  const [prize3, setPrize3] = useState('')
+  const [prizeMsg, setPrizeMsg] = useState('')
+
   const [addUsername, setAddUsername] = useState('')
   const [addDiscord, setAddDiscord] = useState('')
   const [addTier, setAddTier] = useState('')
@@ -29,6 +34,9 @@ export default function AdminTournamentSetup() {
       const r = await fetch('/api/settings')
       const d = await r.json()
       if (d.nextMatchDate) { setNextDate(d.nextMatchDate); setDateInput(d.nextMatchDate) }
+      if (d.prize1) setPrize1(d.prize1)
+      if (d.prize2) setPrize2(d.prize2)
+      if (d.prize3) setPrize3(d.prize3)
     } catch {}
   }
 
@@ -135,6 +143,41 @@ export default function AdminTournamentSetup() {
         </div>
         {dateMsg && <p className="text-xs text-emerald-400 mt-2">{dateMsg}</p>}
         {nextDate && <p className="text-xs text-foreground/70 mt-2">Current: <span className="text-amber-400 font-medium">{new Date(nextDate).toLocaleString()}</span></p>}
+      </div>
+
+      {/* Prizes Panel */}
+      <div className="mb-6 rounded-xl border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-yellow-500/10 to-amber-500/10 p-6">
+        <h2 className="font-bold text-lg mb-3">Tournament Prizes</h2>
+        <div className="grid gap-3 sm:grid-cols-3 mb-3">
+          <div>
+            <label className="block text-xs text-foreground/70 mb-1">1st Prize</label>
+            <input value={prize1} onChange={e => setPrize1(e.target.value)} placeholder="$100" className="w-full rounded-lg border border-amber-500/30 bg-card px-3 py-2 text-sm font-mono focus:outline-none focus:border-amber-500/50" />
+          </div>
+          <div>
+            <label className="block text-xs text-foreground/70 mb-1">2nd Prize</label>
+            <input value={prize2} onChange={e => setPrize2(e.target.value)} placeholder="$50" className="w-full rounded-lg border border-amber-500/30 bg-card px-3 py-2 text-sm font-mono focus:outline-none focus:border-amber-500/50" />
+          </div>
+          <div>
+            <label className="block text-xs text-foreground/70 mb-1">3rd Prize</label>
+            <input value={prize3} onChange={e => setPrize3(e.target.value)} placeholder="$25" className="w-full rounded-lg border border-amber-500/30 bg-card px-3 py-2 text-sm font-mono focus:outline-none focus:border-amber-500/50" />
+          </div>
+        </div>
+        <button
+          onClick={async () => {
+            setPrizeMsg('')
+            const r = await fetch('/api/settings', {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ prize1, prize2, prize3 }),
+            })
+            if (r.ok) setPrizeMsg('Prizes saved!')
+            else setPrizeMsg('Failed to save')
+          }}
+          className="rounded-lg bg-amber-500 px-5 py-2 text-sm font-bold text-black hover:bg-amber-400 transition-all"
+        >
+          Save Prizes
+        </button>
+        {prizeMsg && <p className="text-xs text-emerald-400 mt-2">{prizeMsg}</p>}
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
