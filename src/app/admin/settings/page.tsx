@@ -8,7 +8,8 @@ export default function AdminSettingsPage() {
   const [tab, setTab] = useState<'tiers' | 'modes'>('tiers')
   const [serverIp, setServerIp] = useState('')
   const [totalTournaments, setTotalTournaments] = useState('0')
-  const [saved, setSaved] = useState(false)
+  const [ipSaved, setIpSaved] = useState(false)
+  const [tournamentSaved, setTournamentSaved] = useState(false)
 
   useEffect(() => {
     fetchSettings()
@@ -24,26 +25,26 @@ export default function AdminSettingsPage() {
   }
 
   async function saveServerIp() {
-    setSaved(false)
+    setIpSaved(false)
     try {
       const r = await fetch('/api/settings', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ serverIp }),
       })
-      if (r.ok) setSaved(true)
+      if (r.ok) setIpSaved(true)
     } catch {}
   }
 
   async function saveTotalTournaments() {
-    setSaved(false)
+    setTournamentSaved(false)
     try {
       const r = await fetch('/api/settings', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ totalTournaments: parseInt(totalTournaments) || 0 }),
       })
-      if (r.ok) setSaved(true)
+      if (r.ok) { setTournamentSaved(true); setTotalTournaments(String(parseInt(totalTournaments) || 0)) }
     } catch {}
   }
 
@@ -60,11 +61,11 @@ export default function AdminSettingsPage() {
         <div className="flex items-center gap-2">
           <input
             value={serverIp}
-            onChange={e => { setServerIp(e.target.value); setSaved(false) }}
+            onChange={e => { setServerIp(e.target.value); setIpSaved(false) }}
             className="rounded-lg border border-border/50 bg-card px-3 py-2 text-sm w-56 focus:outline-none focus:border-amber-500/50"
           />
           <button onClick={saveServerIp} className="rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-2 text-sm font-bold text-black hover:from-amber-400 hover:to-amber-500 transition-all">
-            {saved ? 'Saved' : 'Save'}
+            {ipSaved ? 'Saved' : 'Save'}
           </button>
         </div>
       </div>
@@ -79,11 +80,11 @@ export default function AdminSettingsPage() {
           <input
             type="number"
             value={totalTournaments}
-            onChange={e => { setTotalTournaments(e.target.value); setSaved(false) }}
+            onChange={e => { setTotalTournaments(e.target.value); setTournamentSaved(false) }}
             className="rounded-lg border border-border/50 bg-card px-3 py-2 text-sm w-24 focus:outline-none focus:border-amber-500/50"
           />
           <button onClick={saveTotalTournaments} className="rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-2 text-sm font-bold text-black hover:from-amber-400 hover:to-amber-500 transition-all">
-            {saved ? 'Saved' : 'Save'}
+            {tournamentSaved ? 'Saved' : 'Save'}
           </button>
         </div>
       </div>
