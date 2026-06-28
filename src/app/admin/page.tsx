@@ -35,9 +35,9 @@ export default function AdminDashboard() {
 
   const links = [
     { href: '/admin/players', label: 'Players', desc: 'Add, edit, delete players', icon: '👤', color: 'from-blue-500 to-cyan-500' },
-    { href: '/admin/match-players', label: 'Match Players', desc: 'Manage match roster, earnings, and tournament dates', icon: '⚔️', color: 'from-purple-500 to-pink-500' },
+    { href: '/admin/tournament-setup', label: 'Tournament Setup', desc: 'Manage tournament roster, applications, and dates', icon: '🏆', color: 'from-amber-500 to-orange-500' },
     { href: '/admin/applicants', label: 'Applicants', desc: 'View applicants with IP and tier', icon: '📋', color: 'from-emerald-500 to-teal-500' },
-    { href: '/admin/matches', label: 'Matches', desc: 'Submit, approve, reject matches', icon: '🏆', color: 'from-red-500 to-orange-500' },
+    { href: '/admin/matches', label: 'Matches', desc: 'Submit, approve, reject matches', icon: '⚔️', color: 'from-red-500 to-orange-500' },
     { href: '/admin/tiers', label: 'Rankings', desc: 'Tier config, point values', icon: '📊', color: 'from-yellow-500 to-amber-500' },
     { href: '/admin/settings', label: 'Settings', desc: 'Game modes, site info', icon: '⚙️', color: 'from-gray-500 to-slate-500' },
   ]

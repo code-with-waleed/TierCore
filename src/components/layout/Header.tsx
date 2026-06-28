@@ -9,7 +9,7 @@ const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/leaderboard', label: 'Leaderboard' },
   { href: '/ranking/sword', label: 'Ranking' },
-  { href: '/matches', label: 'Matches' },
+  { href: '/tournaments', label: 'Tournaments' },
 ]
 
 function NavLink({ href, label, pathname, mobile, onClick }: { href: string; label: string; pathname: string; mobile?: boolean; onClick?: () => void }) {

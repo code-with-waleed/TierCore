@@ -63,10 +63,10 @@ export default function HomePage() {
               </MagneticButton>
               <MagneticButton strength={0.2}>
                 <Link
-                  href="/matches"
+                  href="/tournaments"
                   className="block rounded-xl bg-gradient-to-r from-emerald-500 to-green-500 px-8 py-3 text-base font-bold text-black hover:from-emerald-400 hover:to-green-400 transition-all shadow-lg shadow-emerald-500/25 hover-lift btn-press btn-shimmer hover-bounce"
                 >
-                  Matches
+                  Tournaments
                 </Link>
               </MagneticButton>
               <MagneticButton strength={0.15}>
@@ -91,7 +91,7 @@ export default function HomePage() {
           </div>
           <div className="text-center">
             <div className="text-3xl font-black text-gradient-gold">{loading ? <span className="animate-skeleton">...</span> : matchCount}</div>
-            <div className="text-sm text-muted-foreground mt-1">Total Matches</div>
+                <div className="text-sm text-muted-foreground mt-1">Total Tournaments</div>
           </div>
         </div>
       </section>
