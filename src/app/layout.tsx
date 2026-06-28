@@ -26,13 +26,13 @@ export const metadata: Metadata = {
     description: 'Competitive Minecraft PvP ranking platform. Climb the tiers, prove your skill.',
     siteName: 'TierCore',
     type: 'website',
-    images: [{ url: '/favicon.svg', width: 100, height: 100 }],
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'TierCore - Minecraft PvP Rankings',
     description: 'Competitive Minecraft PvP ranking platform.',
-    images: ['/favicon.svg'],
+    images: ['/og-image.png'],
   },
 }
 

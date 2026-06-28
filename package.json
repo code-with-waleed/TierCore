@@ -13,7 +13,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "tsx prisma/seed.ts",
     "prisma:studio": "prisma studio",
-    "bot:dev": "tsx discord-bot/index.ts",
+    "bot:dev": "tsx --env-file=.env discord-bot/index.ts",
     "bot:build": "tsc -p discord-bot/tsconfig.json",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down"
