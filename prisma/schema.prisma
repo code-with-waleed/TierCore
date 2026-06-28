@@ -383,6 +383,7 @@ model TournamentEntry {
   tier        String   @default("Unranked")
   status      String   @default("pending")
   earnings    Float    @default(0)
+  points      Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

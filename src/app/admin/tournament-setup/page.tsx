@@ -21,8 +21,15 @@ export default function AdminTournamentSetup() {
   const [addDiscord, setAddDiscord] = useState('')
   const [addTier, setAddTier] = useState('')
   const [addEarnings, setAddEarnings] = useState('0')
+  const [addPoints, setAddPoints] = useState('0')
 
   const [approveEarnings, setApproveEarnings] = useState<Record<string, string>>({})
+  const [approvePoints, setApprovePoints] = useState<Record<string, string>>({})
+
+  const [pendingSearch, setPendingSearch] = useState('')
+  const [winnerInputs, setWinnerInputs] = useState<Record<string, boolean>>({})
+
+  const [clearConfirm, setClearConfirm] = useState(false)
 
   useEffect(() => {
     fetchAll()
@@ -47,8 +54,13 @@ export default function AdminTournamentSetup() {
       const d = await r.json()
       setEntries(d.data ?? [])
       const earnings: Record<string, string> = {}
-      ;(d.data ?? []).forEach((e: any) => { earnings[e.id] = String(e.earnings ?? '0') })
+      const points: Record<string, string> = {}
+      ;(d.data ?? []).forEach((e: any) => {
+        earnings[e.id] = String(e.earnings ?? '0')
+        points[e.id] = String(e.points ?? '0')
+      })
       setApproveEarnings(earnings)
+      setApprovePoints(points)
     } catch {}
     setLoading(false)
   }
@@ -75,12 +87,13 @@ export default function AdminTournamentSetup() {
         discordName: addDiscord.trim() || undefined,
         tier: addTier || undefined,
         earnings: parseFloat(addEarnings) || 0,
-        status: 'approved',
+        points: parseInt(addPoints) || 0,
+        status: 'pending',
       }),
     })
     if (r.ok) {
-      setMsg(`Added ${addUsername} to tournament!`)
-      setAddUsername(''); setAddDiscord(''); setAddTier(''); setAddEarnings('0')
+      setMsg(`Added ${addUsername} (pending)!`)
+      setAddUsername(''); setAddDiscord(''); setAddTier(''); setAddEarnings('0'); setAddPoints('0')
       fetchAll()
     } else {
       const d = await r.json()
@@ -98,6 +111,13 @@ export default function AdminTournamentSetup() {
     if (r.ok) { setMsg('Updated!'); fetchAll() } else { setMsg('Failed to update') }
   }
 
+  async function markWinner(id: string) {
+    const pts = parseInt(approvePoints[id]) || 0
+    const earn = parseFloat(approveEarnings[id]) || 0
+    await updateEntry(id, { status: 'winner', points: pts, earnings: earn })
+    setWinnerInputs(prev => ({ ...prev, [id]: false }))
+  }
+
   async function deleteEntry(id: string) {
     setMsg('')
     const r = await fetch(`/api/tournament/entries/${id}`, { method: 'DELETE' })
@@ -105,15 +125,20 @@ export default function AdminTournamentSetup() {
   }
 
   async function clearAll() {
-    if (!confirm('Clear ALL tournament entries?')) return
     setMsg('')
     const r = await fetch('/api/tournament/entries', { method: 'DELETE' })
-    if (r.ok) { setMsg('Tournament cleared!'); fetchAll() } else { setMsg('Failed to clear') }
+    if (r.ok) { setMsg('Tournament cleared!'); fetchAll(); setClearConfirm(false) } else { setMsg('Failed to clear') }
   }
 
   const pending = entries.filter(e => e.status === 'pending')
   const approved = entries.filter(e => e.status === 'approved')
   const rejected = entries.filter(e => e.status === 'rejected')
+  const winners = entries.filter(e => e.status === 'winner')
+
+  const filteredPending = pending.filter(e =>
+    e.username.toLowerCase().includes(pendingSearch.toLowerCase()) ||
+    (e.discordName && e.discordName.toLowerCase().includes(pendingSearch.toLowerCase()))
+  )
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
@@ -181,18 +206,19 @@ export default function AdminTournamentSetup() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
-        {/* Add Player Directly */}
+        {/* Add Player Directly → Pending */}
         <div className="rounded-xl border border-border/50 bg-card/50 p-6">
-          <h2 className="font-bold text-lg mb-4">Add Player to Tournament</h2>
+          <h2 className="font-bold text-lg mb-4">Add Player (Pending)</h2>
           <div className="space-y-3">
             <input value={addUsername} onChange={e => setAddUsername(e.target.value)} placeholder="Minecraft Username" className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm focus:outline-none focus:border-amber-500/50" />
             <input value={addDiscord} onChange={e => setAddDiscord(e.target.value)} placeholder="Discord Name (optional)" className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm focus:outline-none focus:border-amber-500/50" />
-            <div className="grid grid-cols-2 gap-3">
-              <input value={addTier} onChange={e => setAddTier(e.target.value)} placeholder="Tier (optional)" className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm focus:outline-none focus:border-amber-500/50" />
-              <input type="number" value={addEarnings} onChange={e => setAddEarnings(e.target.value)} placeholder="Earnings" className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm focus:outline-none focus:border-amber-500/50" />
+            <div className="grid grid-cols-3 gap-3">
+              <input value={addTier} onChange={e => setAddTier(e.target.value)} placeholder="Tier" className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm focus:outline-none focus:border-amber-500/50" />
+              <input type="number" value={addPoints} onChange={e => setAddPoints(e.target.value)} placeholder="Points" className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm focus:outline-none focus:border-amber-500/50" />
+              <input type="number" step="0.01" value={addEarnings} onChange={e => setAddEarnings(e.target.value)} placeholder="$ Prize" className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm focus:outline-none focus:border-amber-500/50" />
             </div>
             <button onClick={addEntry} className="w-full rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-2 text-sm font-bold text-black hover:from-amber-400 hover:to-amber-500 transition-all">
-              Add to Tournament
+              Add to Pending
             </button>
           </div>
         </div>
@@ -200,13 +226,20 @@ export default function AdminTournamentSetup() {
         {/* Pending Applications */}
         <div className="rounded-xl border border-border/50 bg-card/50 p-6">
           <h2 className="font-bold text-lg mb-4">Pending Applications ({pending.length})</h2>
+          {/* Search */}
+          <input
+            value={pendingSearch}
+            onChange={e => setPendingSearch(e.target.value)}
+            placeholder="Search pending..."
+            className="w-full mb-3 rounded-lg border border-border/50 bg-card px-3 py-2 text-sm focus:outline-none focus:border-amber-500/50"
+          />
           {loading ? (
-            <div className="space-y-2">{[...Array(3)].map((_, i) => <div key={i} className="h-12 rounded-lg bg-card/30 animate-skeleton" />)}</div>
-          ) : pending.length === 0 ? (
-            <p className="text-sm text-foreground/50 py-8 text-center">No pending applications</p>
+            <div className="space-y-2">{[...Array(3)].map((_, i) => <div key={i} className="h-14 rounded-lg bg-card/30 animate-skeleton" />)}</div>
+          ) : filteredPending.length === 0 ? (
+            <p className="text-sm text-foreground/50 py-8 text-center">{pendingSearch ? 'No matching pending applications' : 'No pending applications'}</p>
           ) : (
-            <div className="space-y-2 max-h-80 overflow-y-auto">
-              {pending.map(e => (
+            <div className="space-y-2 max-h-96 overflow-y-auto">
+              {filteredPending.map(e => (
                 <div key={e.id} className="rounded-lg bg-card/70 px-3 py-2 border border-border/30">
                   <div className="flex items-center justify-between mb-2">
                     <div>
@@ -215,12 +248,26 @@ export default function AdminTournamentSetup() {
                     </div>
                     <span className="text-[10px] text-foreground/50">{e.tier}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <input type="number" value={approveEarnings[e.id] ?? '0'} onChange={e2 => setApproveEarnings(prev => ({ ...prev, [e.id]: e2.target.value }))} className="w-16 rounded border border-border/50 bg-card px-1.5 py-1 text-xs font-mono text-right focus:outline-none focus:border-amber-500/50" placeholder="$" />
-                    <button onClick={() => updateEntry(e.id, { status: 'approved', earnings: parseFloat(approveEarnings[e.id]) || 0 })} className="rounded-md bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-1 text-xs font-medium text-emerald-400 hover:bg-emerald-500/30 transition-all">Approve</button>
-                    <button onClick={() => updateEntry(e.id, { status: 'rejected' })} className="rounded-md bg-red-500/20 border border-red-500/30 px-2.5 py-1 text-xs font-medium text-red-400 hover:bg-red-500/30 transition-all">Reject</button>
-                    <button onClick={() => deleteEntry(e.id)} className="text-[10px] text-foreground/50 hover:text-red-400 ml-auto">✕</button>
-                  </div>
+
+                  {winnerInputs[e.id] ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <input type="number" value={approvePoints[e.id] ?? '0'} onChange={e2 => setApprovePoints(prev => ({ ...prev, [e.id]: e2.target.value }))} className="w-full rounded border border-amber-500/50 bg-card px-2 py-1.5 text-xs font-mono focus:outline-none focus:border-amber-500" placeholder="Tournament Points" />
+                        <input type="number" step="0.01" value={approveEarnings[e.id] ?? '0'} onChange={e2 => setApproveEarnings(prev => ({ ...prev, [e.id]: e2.target.value }))} className="w-full rounded border border-amber-500/50 bg-card px-2 py-1.5 text-xs font-mono focus:outline-none focus:border-amber-500" placeholder="Prize $" />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button onClick={() => markWinner(e.id)} className="flex-1 rounded-md bg-purple-500/30 border border-purple-500/40 px-2.5 py-1.5 text-xs font-bold text-purple-400 hover:bg-purple-500/40 transition-all">Confirm Winner</button>
+                        <button onClick={() => setWinnerInputs(prev => ({ ...prev, [e.id]: false }))} className="text-[10px] text-foreground/50 hover:text-foreground">Cancel</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => updateEntry(e.id, { status: 'approved', earnings: parseFloat(approveEarnings[e.id]) || 0, points: parseInt(approvePoints[e.id]) || 0 })} className="rounded-md bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-1 text-xs font-medium text-emerald-400 hover:bg-emerald-500/30 transition-all">Approve</button>
+                      <button onClick={() => updateEntry(e.id, { status: 'rejected' })} className="rounded-md bg-red-500/20 border border-red-500/30 px-2.5 py-1 text-xs font-medium text-red-400 hover:bg-red-500/30 transition-all">Reject</button>
+                      <button onClick={() => setWinnerInputs(prev => ({ ...prev, [e.id]: true }))} className="rounded-md bg-purple-500/20 border border-purple-500/30 px-2.5 py-1 text-xs font-medium text-purple-400 hover:bg-purple-500/30 transition-all">Winner</button>
+                      <button onClick={() => deleteEntry(e.id)} className="text-[10px] text-foreground/50 hover:text-red-400 ml-auto">✕</button>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -230,15 +277,12 @@ export default function AdminTournamentSetup() {
         {/* Approved Roster */}
         <div className="rounded-xl border border-border/50 bg-card/50 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-bold text-lg">Tournament Roster ({approved.length})</h2>
-            {approved.length > 0 && (
-              <button onClick={clearAll} className="text-xs text-red-400 hover:text-red-300">Clear All</button>
-            )}
+            <h2 className="font-bold text-lg">Approved ({approved.length})</h2>
           </div>
           {loading ? (
             <div className="space-y-2">{[...Array(3)].map((_, i) => <div key={i} className="h-12 rounded-lg bg-card/30 animate-skeleton" />)}</div>
           ) : approved.length === 0 ? (
-            <p className="text-sm text-foreground/50 py-8 text-center">No players in tournament</p>
+            <p className="text-sm text-foreground/50 py-8 text-center">No approved players</p>
           ) : (
             <div className="space-y-2 max-h-96 overflow-y-auto">
               {approved.map(e => (
@@ -248,8 +292,9 @@ export default function AdminTournamentSetup() {
                     <span className="text-[10px] text-foreground/50 whitespace-nowrap">{e.tier}</span>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
-                    <input type="number" value={approveEarnings[e.id] ?? e.earnings} onChange={e2 => setApproveEarnings(prev => ({ ...prev, [e.id]: e2.target.value }))} className="w-16 rounded border border-border/50 bg-card px-1.5 py-1 text-xs font-mono text-right focus:outline-none focus:border-amber-500/50" />
-                    <button onClick={() => updateEntry(e.id, { earnings: parseFloat(approveEarnings[e.id]) || 0 })} className="rounded-md bg-amber-500/20 border border-amber-500/30 px-2 py-1 text-xs font-medium text-amber-400 hover:bg-amber-500/30 transition-all">$</button>
+                    <input type="number" value={approvePoints[e.id] ?? e.points} onChange={e2 => setApprovePoints(prev => ({ ...prev, [e.id]: e2.target.value }))} className="w-14 rounded border border-border/50 bg-card px-1.5 py-1 text-xs font-mono text-right focus:outline-none focus:border-amber-500/50" title="Points" />
+                    <input type="number" step="0.01" value={approveEarnings[e.id] ?? e.earnings} onChange={e2 => setApproveEarnings(prev => ({ ...prev, [e.id]: e2.target.value }))} className="w-16 rounded border border-border/50 bg-card px-1.5 py-1 text-xs font-mono text-right focus:outline-none focus:border-amber-500/50" title="Earnings $" />
+                    <button onClick={() => updateEntry(e.id, { earnings: parseFloat(approveEarnings[e.id]) || 0, points: parseInt(approvePoints[e.id]) || 0 })} className="rounded-md bg-amber-500/20 border border-amber-500/30 px-2 py-1 text-xs font-medium text-amber-400 hover:bg-amber-500/30 transition-all" title="Save">Save</button>
                     <button onClick={() => updateEntry(e.id, { status: 'pending' })} className="rounded-md bg-yellow-500/20 border border-yellow-500/30 px-2 py-1 text-xs font-medium text-yellow-400 hover:bg-yellow-500/30 transition-all" title="Move to pending">↩</button>
                     <button onClick={() => deleteEntry(e.id)} className="rounded-md bg-red-500/20 border border-red-500/30 px-2 py-1 text-xs font-medium text-red-400 hover:bg-red-500/30 transition-all">✕</button>
                   </div>
@@ -258,15 +303,38 @@ export default function AdminTournamentSetup() {
             </div>
           )}
         </div>
+
+        {/* Winners */}
+        {winners.length > 0 && (
+          <div className="rounded-xl border border-purple-500/40 bg-purple-500/5 p-6">
+            <h2 className="font-bold text-lg mb-4 text-purple-400">Winners ({winners.length})</h2>
+            <div className="space-y-2 max-h-60 overflow-y-auto">
+              {winners.map((e, i) => (
+                <div key={e.id} className="flex items-center justify-between rounded-lg bg-card/70 px-3 py-2 border border-purple-500/30">
+                  <div className="flex items-center gap-2">
+                    <span className="text-purple-400 text-sm">{['🥇','🥈','🥉'][i] || '🏅'}</span>
+                    <span className="font-medium text-sm">{e.username}</span>
+                    <span className="text-[10px] text-foreground/50">{e.tier}</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-xs">
+                    <span className="text-purple-400 font-mono font-bold">{e.points} pts</span>
+                    <span className="text-emerald-400 font-mono font-bold">${(e.earnings ?? 0).toFixed(2)}</span>
+                    <button onClick={() => deleteEntry(e.id)} className="text-[10px] text-red-400 hover:text-red-300">✕</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Rejected */}
       {rejected.length > 0 && (
-        <div className="mt-6 rounded-xl border border-border/50 bg-card/50 p-6">
-          <h2 className="font-bold text-lg mb-4">Rejected ({rejected.length})</h2>
+        <div className="mt-6 rounded-xl border border-red-500/30 bg-red-500/5 p-6">
+          <h2 className="font-bold text-lg mb-4 text-red-400">Rejected ({rejected.length})</h2>
           <div className="space-y-1 max-h-40 overflow-y-auto">
             {rejected.map(e => (
-              <div key={e.id} className="flex items-center justify-between rounded-lg bg-card/70 px-3 py-1.5 border border-border/30">
+              <div key={e.id} className="flex items-center justify-between rounded-lg bg-card/70 px-3 py-1.5 border border-red-500/20">
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-foreground/70">{e.username}</span>
                   {e.discordName && <span className="text-[10px] text-foreground/50">{e.discordName}</span>}
@@ -280,6 +348,21 @@ export default function AdminTournamentSetup() {
           </div>
         </div>
       )}
+
+      {/* Clear All with double confirm */}
+      <div className="mt-6 flex justify-end">
+        {clearConfirm ? (
+          <div className="flex items-center gap-3 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3">
+            <span className="text-sm text-red-400 font-medium">Are you sure? This will remove ALL entries.</span>
+            <button onClick={clearAll} className="rounded-md bg-red-500 px-3 py-1.5 text-xs font-bold text-white hover:bg-red-400 transition-all">Yes, Clear All</button>
+            <button onClick={() => setClearConfirm(false)} className="text-xs text-foreground/70 hover:text-foreground">Cancel</button>
+          </div>
+        ) : (
+          <button onClick={() => setClearConfirm(true)} className="rounded-lg bg-red-500/20 border border-red-500/30 px-4 py-2 text-sm font-medium text-red-400 hover:bg-red-500/30 transition-all">
+            Clear All Entries
+          </button>
+        )}
+      </div>
     </div>
   )
 }

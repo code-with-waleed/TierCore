@@ -15,7 +15,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { username, discordId, discordName, tier } = body
+    const { username, discordId, discordName, tier, earnings, points, status: bodyStatus } = body
 
     if (!username) {
       return NextResponse.json({ error: 'Username is required' }, { status: 400 })
@@ -34,6 +34,9 @@ export async function POST(req: NextRequest) {
         discordId: discordId ?? null,
         discordName: discordName ?? null,
         tier: tier ?? 'Unranked',
+        earnings: typeof earnings === 'number' ? earnings : 0,
+        points: typeof points === 'number' ? points : 0,
+        status: bodyStatus ?? 'pending',
       },
     })
 

@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
 import { getCombatRankFromPoints } from '@/lib/points'
 import { RANK_EMBLEMS } from '@/lib/rank-emblems'
 
@@ -12,14 +11,27 @@ export default function TournamentsPage() {
   const [prize1, setPrize1] = useState('')
   const [prize2, setPrize2] = useState('')
   const [prize3, setPrize3] = useState('')
+  const [activeTab, setActiveTab] = useState<'approved' | 'pending' | 'winners'>('winners')
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [clearConfirm, setClearConfirm] = useState(false)
 
   useEffect(() => {
+    checkAdmin()
+    fetchData()
+  }, [])
+
+  async function checkAdmin() {
+    try {
+      const r = await fetch('/api/auth/check')
+      if (r.ok) setIsAdmin(true)
+    } catch {}
+  }
+
+  async function fetchData() {
     fetch('/api/tournament/entries')
       .then(res => res.json())
       .then(d => {
-        const approved = (d.data ?? []).filter((e: any) => e.status === 'approved')
-        approved.sort((a: any, b: any) => (b.earnings ?? 0) - (a.earnings ?? 0))
-        setEntries(approved)
+        setEntries(d.data ?? [])
       })
       .catch(() => setEntries([]))
       .finally(() => setLoading(false))
@@ -33,7 +45,18 @@ export default function TournamentsPage() {
         if (d.prize3) setPrize3(d.prize3)
       })
       .catch(() => {})
-  }, [])
+  }
+
+  async function clearAll() {
+    try {
+      const r = await fetch('/api/tournament/entries', { method: 'DELETE' })
+      if (r.ok) { setEntries([]); setClearConfirm(false) }
+    } catch {}
+  }
+
+  const winners = entries.filter(e => e.status === 'winner').sort((a: any, b: any) => (b.earnings ?? 0) - (a.earnings ?? 0))
+  const approved = entries.filter(e => e.status === 'approved').sort((a: any, b: any) => (b.earnings ?? 0) - (a.earnings ?? 0))
+  const pending = entries.filter(e => e.status === 'pending')
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
@@ -50,7 +73,7 @@ export default function TournamentsPage() {
         </div>
       )}
 
-      {/* Prizes + How to Participate */}
+      {/* Prizes + Leaderboard */}
       <div className="grid gap-6 lg:grid-cols-3 mb-8">
         {/* Prize Podium */}
         <div className="lg:col-span-1">
@@ -107,7 +130,20 @@ export default function TournamentsPage() {
             </ol>
           </div>
 
-          {/* Leaderboard Table */}
+          {/* Tab Navigation */}
+          <div className="flex items-center gap-1 rounded-xl border border-border/50 bg-card/30 p-1">
+            <button onClick={() => setActiveTab('winners')} className={`flex-1 rounded-lg px-3 py-2 text-xs font-bold transition-all ${activeTab === 'winners' ? 'bg-purple-500/20 text-purple-400 shadow-sm' : 'text-foreground/60 hover:text-foreground/80'}`}>
+              Winners ({winners.length})
+            </button>
+            <button onClick={() => setActiveTab('approved')} className={`flex-1 rounded-lg px-3 py-2 text-xs font-bold transition-all ${activeTab === 'approved' ? 'bg-emerald-500/20 text-emerald-400 shadow-sm' : 'text-foreground/60 hover:text-foreground/80'}`}>
+              Approved ({approved.length})
+            </button>
+            <button onClick={() => setActiveTab('pending')} className={`flex-1 rounded-lg px-3 py-2 text-xs font-bold transition-all ${activeTab === 'pending' ? 'bg-amber-500/20 text-amber-400 shadow-sm' : 'text-foreground/60 hover:text-foreground/80'}`}>
+              Pending ({pending.length})
+            </button>
+          </div>
+
+          {/* Table */}
           {loading ? (
             <div className="space-y-2">
               {[...Array(6)].map((_, i) => (
@@ -117,49 +153,145 @@ export default function TournamentsPage() {
           ) : (
             <div className="overflow-hidden rounded-xl border border-border/50">
               <div className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-card/50">
-                <h2 className="font-bold text-sm">Tournament Leaderboard</h2>
-                <span className="text-xs text-foreground/60">{entries.length} players</span>
-              </div>
-              {entries.length === 0 ? (
-                <div className="text-center py-16 text-foreground/50">No tournament players yet</div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b border-border/30">
-                        <th className="px-4 py-2.5 text-left font-semibold text-foreground/70 w-10">#</th>
-                        <th className="px-4 py-2.5 text-left font-semibold text-foreground/70">Player</th>
-                        <th className="px-4 py-2.5 text-center font-semibold text-foreground/70 hidden sm:table-cell">Rank</th>
-                        <th className="px-4 py-2.5 text-center font-semibold text-foreground/70">Tier</th>
-                        <th className="px-4 py-2.5 text-right font-semibold text-foreground/70">Earnings</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {entries.map((e: any, i: number) => {
-                        const rankInfo = getCombatRankFromPoints(e.earnings ?? 0)
-                        const Emblem = rankInfo ? RANK_EMBLEMS[rankInfo.key] : null
-                        return (
-                          <tr key={e.id} className="border-b border-border/30 transition-colors hover:bg-accent/20">
-                            <td className={`px-4 py-3 text-xs font-bold ${i === 0 ? 'text-amber-400' : i === 1 ? 'text-gray-400' : i === 2 ? 'text-amber-700' : 'text-foreground/60'}`}>{i + 1}</td>
-                            <td className="px-4 py-3 font-medium">{e.username}</td>
-                            <td className="px-4 py-3 text-center hidden sm:table-cell">
-                              {Emblem && (
-                                <div className="inline-flex items-center gap-1.5" title={`${rankInfo.name} (${e.earnings ?? 0} pts)`}>
-                                  <Emblem size={20} />
-                                  <span className="text-[10px] font-bold text-foreground/60">{rankInfo.name}</span>
-                                </div>
-                              )}
-                            </td>
-                            <td className="px-4 py-3 text-center">
-                              <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-white/5 text-foreground/80">{e.tier}</span>
-                            </td>
-                            <td className="px-4 py-3 text-right font-mono font-bold text-emerald-400">${(e.earnings ?? 0).toFixed(2)}</td>
-                          </tr>
-                        )
-                      })}
-                    </tbody>
-                  </table>
+                <h2 className="font-bold text-sm">
+                  {activeTab === 'winners' ? 'Tournament Winners' : activeTab === 'approved' ? 'Approved Players' : 'Pending Applications'}
+                </h2>
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-foreground/60">
+                    {activeTab === 'winners' ? winners.length : activeTab === 'approved' ? approved.length : pending.length} players
+                  </span>
+                  {isAdmin && (
+                    clearConfirm ? (
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-red-400">Confirm clear?</span>
+                        <button onClick={clearAll} className="text-[10px] text-red-400 font-bold hover:text-red-300">Yes</button>
+                        <button onClick={() => setClearConfirm(false)} className="text-[10px] text-foreground/60 hover:text-foreground">No</button>
+                      </div>
+                    ) : (
+                      <button onClick={() => setClearConfirm(true)} className="text-[10px] text-red-400 hover:text-red-300">Clear All</button>
+                    )
+                  )}
                 </div>
+              </div>
+              {activeTab === 'winners' && (
+                winners.length === 0 ? (
+                  <div className="text-center py-16 text-foreground/50">No winners yet</div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-border/30">
+                          <th className="px-4 py-2.5 text-left font-semibold text-foreground/70 w-10">#</th>
+                          <th className="px-4 py-2.5 text-left font-semibold text-foreground/70">Player</th>
+                          <th className="px-4 py-2.5 text-center font-semibold text-foreground/70 hidden sm:table-cell">Rank</th>
+                          <th className="px-4 py-2.5 text-center font-semibold text-foreground/70">Tier</th>
+                          <th className="px-4 py-2.5 text-center font-semibold text-foreground/70">Points</th>
+                          <th className="px-4 py-2.5 text-right font-semibold text-foreground/70">Earnings</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {winners.map((e: any, i: number) => {
+                          const rankInfo = getCombatRankFromPoints(e.points ?? 0)
+                          const Emblem = rankInfo ? RANK_EMBLEMS[rankInfo.key] : null
+                          return (
+                            <tr key={e.id} className="border-b border-purple-500/20 bg-purple-500/5 transition-colors hover:bg-purple-500/10">
+                              <td className="px-4 py-3">
+                                <span className="text-sm">{['🥇','🥈','🥉'][i] || '🏅'}</span>
+                              </td>
+                              <td className="px-4 py-3 font-medium">{e.username}</td>
+                              <td className="px-4 py-3 text-center hidden sm:table-cell">
+                                {Emblem && (
+                                  <div className="inline-flex items-center gap-1.5" title={`${rankInfo.name} (${e.points ?? 0} pts)`}>
+                                    <Emblem size={20} />
+                                    <span className="text-[10px] font-bold text-foreground/60">{rankInfo.name}</span>
+                                  </div>
+                                )}
+                              </td>
+                              <td className="px-4 py-3 text-center">
+                                <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-white/5 text-foreground/80">{e.tier}</span>
+                              </td>
+                              <td className="px-4 py-3 text-center font-mono font-bold text-purple-400">{e.points ?? 0}</td>
+                              <td className="px-4 py-3 text-right font-mono font-bold text-emerald-400">${(e.earnings ?? 0).toFixed(2)}</td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )
+              )}
+              {activeTab === 'approved' && (
+                approved.length === 0 ? (
+                  <div className="text-center py-16 text-foreground/50">No approved players yet</div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-border/30">
+                          <th className="px-4 py-2.5 text-left font-semibold text-foreground/70 w-10">#</th>
+                          <th className="px-4 py-2.5 text-left font-semibold text-foreground/70">Player</th>
+                          <th className="px-4 py-2.5 text-center font-semibold text-foreground/70 hidden sm:table-cell">Rank</th>
+                          <th className="px-4 py-2.5 text-center font-semibold text-foreground/70">Tier</th>
+                          <th className="px-4 py-2.5 text-right font-semibold text-foreground/70">Earnings</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {approved.map((e: any, i: number) => {
+                          const rankInfo = getCombatRankFromPoints(e.points ?? 0)
+                          const Emblem = rankInfo ? RANK_EMBLEMS[rankInfo.key] : null
+                          return (
+                            <tr key={e.id} className="border-b border-border/30 transition-colors hover:bg-accent/20">
+                              <td className="px-4 py-3 text-xs font-bold text-foreground/60">{i + 1}</td>
+                              <td className="px-4 py-3 font-medium">{e.username}</td>
+                              <td className="px-4 py-3 text-center hidden sm:table-cell">
+                                {Emblem && (
+                                  <div className="inline-flex items-center gap-1.5">
+                                    <Emblem size={20} />
+                                    <span className="text-[10px] font-bold text-foreground/60">{rankInfo.name}</span>
+                                  </div>
+                                )}
+                              </td>
+                              <td className="px-4 py-3 text-center">
+                                <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-white/5 text-foreground/80">{e.tier}</span>
+                              </td>
+                              <td className="px-4 py-3 text-right font-mono font-bold text-emerald-400">${(e.earnings ?? 0).toFixed(2)}</td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )
+              )}
+              {activeTab === 'pending' && (
+                pending.length === 0 ? (
+                  <div className="text-center py-16 text-foreground/50">No pending applications</div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-border/30">
+                          <th className="px-4 py-2.5 text-left font-semibold text-foreground/70">Player</th>
+                          <th className="px-4 py-2.5 text-center font-semibold text-foreground/70 hidden sm:table-cell">Discord</th>
+                          <th className="px-4 py-2.5 text-center font-semibold text-foreground/70">Tier</th>
+                          <th className="px-4 py-2.5 text-right font-semibold text-foreground/70">Applied</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {pending.map((e: any) => (
+                          <tr key={e.id} className="border-b border-border/30 transition-colors hover:bg-accent/20">
+                            <td className="px-4 py-3 font-medium">{e.username}</td>
+                            <td className="px-4 py-3 text-center hidden sm:table-cell text-foreground/60 text-xs">{e.discordName || '—'}</td>
+                            <td className="px-4 py-3 text-center">
+                              <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400">{e.tier}</span>
+                            </td>
+                            <td className="px-4 py-3 text-right text-xs text-foreground/50">{new Date(e.createdAt).toLocaleDateString()}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )
               )}
             </div>
           )}
