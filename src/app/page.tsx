@@ -52,11 +52,11 @@ export default function HomePage() {
             <p className="mt-4 text-base text-foreground/80 max-w-2xl mx-auto animate-slide-up anim-delay-2">
               Compete across {GAME_MODES.length - 1} game modes. Climb through the ranks from LT5 to HT1.
             </p>
-            <div className="mt-8 flex items-center justify-center gap-4 animate-slide-up anim-delay-3">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4 animate-slide-up anim-delay-3">
               <MagneticButton strength={0.2}>
                 <Link
                   href="/leaderboard"
-                  className="block rounded-xl bg-gradient-to-r from-yellow-500 to-amber-500 px-8 py-3 text-base font-bold text-black hover:from-yellow-400 hover:to-amber-400 transition-all shadow-lg shadow-yellow-500/25 hover-lift btn-press btn-shimmer btn-gradient-shift hover-bounce"
+                  className="block rounded-xl bg-gradient-to-r from-yellow-500 to-amber-500 px-5 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base font-bold text-black hover:from-yellow-400 hover:to-amber-400 transition-all shadow-lg shadow-yellow-500/25 hover-lift btn-press btn-shimmer btn-gradient-shift hover-bounce"
                 >
                   View Leaderboard
                 </Link>
@@ -64,7 +64,7 @@ export default function HomePage() {
               <MagneticButton strength={0.2}>
                 <Link
                   href="/tournaments"
-                  className="block rounded-xl bg-gradient-to-r from-emerald-500 to-green-500 px-8 py-3 text-base font-bold text-black hover:from-emerald-400 hover:to-green-400 transition-all shadow-lg shadow-emerald-500/25 hover-lift btn-press btn-shimmer hover-bounce"
+                  className="block rounded-xl bg-gradient-to-r from-emerald-500 to-green-500 px-5 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base font-bold text-black hover:from-emerald-400 hover:to-green-400 transition-all shadow-lg shadow-emerald-500/25 hover-lift btn-press btn-shimmer hover-bounce"
                 >
                   Tournaments
                 </Link>
@@ -72,7 +72,7 @@ export default function HomePage() {
               <MagneticButton strength={0.15}>
                 <Link
                   href="/ranking/sword"
-                  className="block rounded-xl border border-border bg-card/80 px-8 py-3 text-base font-medium text-foreground hover:bg-accent transition-all hover-lift btn-press hover-bounce"
+                  className="block rounded-xl border border-border bg-card/80 px-5 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base font-medium text-foreground hover:bg-accent transition-all hover-lift btn-press hover-bounce"
                 >
                   Rankings
                 </Link>
