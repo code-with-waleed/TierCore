@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 
 export default function TournamentContent({ tab }: { tab: 'winners' | 'approved' | 'pending' }) {
@@ -11,9 +11,12 @@ export default function TournamentContent({ tab }: { tab: 'winners' | 'approved'
   const [prize2, setPrize2] = useState('')
   const [prize3, setPrize3] = useState('')
   const [search, setSearch] = useState('')
+  const intervalRef = useRef<ReturnType<typeof setInterval>>()
 
   useEffect(() => {
     fetchData()
+    intervalRef.current = setInterval(fetchData, 10000)
+    return () => clearInterval(intervalRef.current)
   }, [])
 
   async function fetchData() {

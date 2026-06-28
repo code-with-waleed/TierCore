@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { GAME_MODES } from '@/lib/game-modes'
 import { DEFAULT_TIERS, TIER_POINTS } from '@/lib/points'
@@ -10,6 +10,7 @@ export default function HomePage() {
   const [playerCount, setPlayerCount] = useState(0)
   const [totalTournaments, setTotalTournaments] = useState(0)
   const [loading, setLoading] = useState(true)
+  const intervalRef = useRef<ReturnType<typeof setInterval>>()
 
   useEffect(() => {
     async function fetchStats() {
@@ -30,6 +31,8 @@ export default function HomePage() {
       }
     }
     fetchStats()
+    intervalRef.current = setInterval(fetchStats, 15000)
+    return () => clearInterval(intervalRef.current)
   }, [])
 
   return (
