@@ -164,7 +164,6 @@ export default function TournamentsPage() {
                         <tr className="border-b border-border/30">
                           <th className="px-4 py-2.5 text-left font-semibold text-foreground/70 w-10">#</th>
                           <th className="px-4 py-2.5 text-left font-semibold text-foreground/70">Player</th>
-                          <th className="px-4 py-2.5 text-center font-semibold text-foreground/70">Tier</th>
                           <th className="px-4 py-2.5 text-center font-semibold text-foreground/70">Points</th>
                           <th className="px-4 py-2.5 text-right font-semibold text-foreground/70">Reward</th>
                         </tr>
@@ -176,9 +175,6 @@ export default function TournamentsPage() {
                               <span className="text-sm">{['🥇','🥈','🥉'][i] || '🏅'}</span>
                             </td>
                             <td className="px-4 py-3 font-medium">{e.username}</td>
-                            <td className="px-4 py-3 text-center">
-                              <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-white/5 text-foreground/80">{e.tier}</span>
-                            </td>
                             <td className="px-4 py-3 text-center font-mono font-bold text-purple-400">{e.points ?? 0}</td>
                             <td className="px-4 py-3 text-right font-medium text-emerald-400">{e.reward || `$${(e.earnings ?? 0).toFixed(2)}`}</td>
                           </tr>
@@ -199,7 +195,6 @@ export default function TournamentsPage() {
                         <tr className="border-b border-border/30">
                           <th className="px-4 py-2.5 text-left font-semibold text-foreground/70 w-10">#</th>
                           <th className="px-4 py-2.5 text-left font-semibold text-foreground/70">Player</th>
-                          <th className="px-4 py-2.5 text-center font-semibold text-foreground/70">Tier</th>
                           <th className="px-4 py-2.5 text-center font-semibold text-foreground/70">Points</th>
                           <th className="px-4 py-2.5 text-right font-semibold text-foreground/70">Reward</th>
                         </tr>
@@ -209,9 +204,6 @@ export default function TournamentsPage() {
                           <tr key={e.id} className="border-b border-border/30 transition-colors hover:bg-accent/20">
                             <td className="px-4 py-3 text-xs font-bold text-foreground/60">{i + 1}</td>
                             <td className="px-4 py-3 font-medium">{e.username}</td>
-                            <td className="px-4 py-3 text-center">
-                              <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-white/5 text-foreground/80">{e.tier}</span>
-                            </td>
                             <td className="px-4 py-3 text-center font-mono font-bold text-foreground/70">{e.points ?? 0}</td>
                             <td className="px-4 py-3 text-right font-medium text-emerald-400">{e.reward || `$${(e.earnings ?? 0).toFixed(2)}`}</td>
                           </tr>
@@ -232,7 +224,6 @@ export default function TournamentsPage() {
                         <tr className="border-b border-border/30">
                           <th className="px-4 py-2.5 text-left font-semibold text-foreground/70">Player</th>
                           <th className="px-4 py-2.5 text-center font-semibold text-foreground/70 hidden sm:table-cell">Discord</th>
-                          <th className="px-4 py-2.5 text-center font-semibold text-foreground/70">Tier</th>
                           <th className="px-4 py-2.5 text-right font-semibold text-foreground/70">Applied</th>
                         </tr>
                       </thead>
@@ -241,9 +232,6 @@ export default function TournamentsPage() {
                           <tr key={e.id} className="border-b border-border/30 transition-colors hover:bg-accent/20">
                             <td className="px-4 py-3 font-medium">{e.username}</td>
                             <td className="px-4 py-3 text-center hidden sm:table-cell text-foreground/60 text-xs">{e.discordName || '—'}</td>
-                            <td className="px-4 py-3 text-center">
-                              <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400">{e.tier}</span>
-                            </td>
                             <td className="px-4 py-3 text-right text-xs text-foreground/50">{new Date(e.createdAt).toLocaleDateString()}</td>
                           </tr>
                         ))}

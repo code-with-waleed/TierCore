@@ -19,7 +19,6 @@ export default function AdminTournamentSetup() {
 
   const [addUsername, setAddUsername] = useState('')
   const [addDiscord, setAddDiscord] = useState('')
-  const [addTier, setAddTier] = useState('')
   const [addPoints, setAddPoints] = useState('0')
   const [addReward, setAddReward] = useState('')
 
@@ -85,7 +84,6 @@ export default function AdminTournamentSetup() {
       body: JSON.stringify({
         username: addUsername.trim(),
         discordName: addDiscord.trim() || undefined,
-        tier: addTier || undefined,
         points: parseInt(addPoints) || 0,
         reward: addReward.trim() || undefined,
         status: 'pending',
@@ -93,7 +91,7 @@ export default function AdminTournamentSetup() {
     })
     if (r.ok) {
       setMsg(`Added ${addUsername} (pending)!`)
-      setAddUsername(''); setAddDiscord(''); setAddTier(''); setAddPoints('0'); setAddReward('')
+      setAddUsername(''); setAddDiscord(''); setAddPoints('0'); setAddReward('')
       fetchAll()
     } else {
       const d = await r.json()
@@ -212,8 +210,7 @@ export default function AdminTournamentSetup() {
           <div className="space-y-3">
             <input value={addUsername} onChange={e => setAddUsername(e.target.value)} placeholder="Minecraft Username" className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm focus:outline-none focus:border-amber-500/50" />
             <input value={addDiscord} onChange={e => setAddDiscord(e.target.value)} placeholder="Discord Name (optional)" className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm focus:outline-none focus:border-amber-500/50" />
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <input value={addTier} onChange={e => setAddTier(e.target.value)} placeholder="Tier" className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm focus:outline-none focus:border-amber-500/50" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <input type="number" value={addPoints} onChange={e => setAddPoints(e.target.value)} placeholder="Points" className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm focus:outline-none focus:border-amber-500/50" />
               <input value={addReward} onChange={e => setAddReward(e.target.value)} placeholder="Reward (e.g. $50 + Sword)" className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm focus:outline-none focus:border-amber-500/50" />
             </div>
@@ -240,12 +237,9 @@ export default function AdminTournamentSetup() {
             <div className="space-y-2 max-h-96 overflow-y-auto">
               {filteredPending.map(e => (
                 <div key={e.id} className="rounded-lg bg-card/70 px-3 py-2 border border-border/30">
-                  <div className="flex items-center justify-between mb-2">
-                    <div>
-                      <span className="font-medium text-sm">{e.username}</span>
-                      {e.discordName && <span className="text-[10px] text-foreground/50 ml-2">{e.discordName}</span>}
-                    </div>
-                    <span className="text-[10px] text-foreground/50">{e.tier}</span>
+                  <div className="mb-2">
+                    <span className="font-medium text-sm">{e.username}</span>
+                    {e.discordName && <span className="text-[10px] text-foreground/50 ml-2">{e.discordName}</span>}
                   </div>
 
                   {winnerInputs[e.id] ? (
@@ -286,9 +280,8 @@ export default function AdminTournamentSetup() {
             <div className="space-y-2 max-h-96 overflow-y-auto">
               {approved.map(e => (
                 <div key={e.id} className="flex flex-col sm:flex-row sm:items-center justify-between rounded-lg bg-card/70 px-3 py-2 border border-border/30 gap-2">
-                  <div className="flex items-center gap-2 min-w-0">
+                  <div className="min-w-0">
                     <span className="font-medium text-sm truncate">{e.username}</span>
-                    <span className="text-[10px] text-foreground/50 whitespace-nowrap">{e.tier}</span>
                   </div>
                   <div className="flex flex-wrap items-center gap-1.5">
                     <input type="number" value={approvePoints[e.id] ?? e.points} onChange={e2 => setApprovePoints(prev => ({ ...prev, [e.id]: e2.target.value }))} className="w-14 rounded border border-border/50 bg-card px-1.5 py-1 text-xs font-mono text-right focus:outline-none focus:border-amber-500/50" title="Points" />
@@ -313,7 +306,6 @@ export default function AdminTournamentSetup() {
                   <div className="flex items-center gap-2">
                     <span className="text-purple-400 text-sm">{['🥇','🥈','🥉'][i] || '🏅'}</span>
                     <span className="font-medium text-sm">{e.username}</span>
-                    <span className="text-[10px] text-foreground/50">{e.tier}</span>
                   </div>
                   <div className="flex items-center gap-2 sm:gap-3 text-xs">
                     <span className="text-purple-400 font-mono font-bold">{e.points} pts</span>
