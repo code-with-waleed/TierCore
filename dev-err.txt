@@ -1,0 +1,120 @@
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\tiercore\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\tiercore\\.next\\routes-manifest.json',
+  page: '/api/leaderboard'
+}
+ ⨯ Failed to generate static paths for /ranking/[mode]:
+[Error: Cannot find module './vendor-chunks/tailwind-merge.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\server\dev\static-paths-worker.js
+- D:\tiercore\node_modules\next\dist\compiled\jest-worker\processChild.js] {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+Could not find files for /_error in .next/build-manifest.json
+Could not find files for /_error in .next/build-manifest.json
+ ⨯ [Error: Cannot find module './vendor-chunks/tailwind-merge.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\server\dev\static-paths-worker.js
+- D:\tiercore\node_modules\next\dist\compiled\jest-worker\processChild.js] {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/ranking/overall'
+}
+Could not find files for /_error in .next/build-manifest.json
+Could not find files for /_error in .next/build-manifest.json
+ ⨯ [Error: Cannot find module './vendor-chunks/tailwind-merge.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\server\dev\static-paths-worker.js
+- D:\tiercore\node_modules\next\dist\compiled\jest-worker\processChild.js] {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/ranking/overall'
+}
+Could not find files for /_error in .next/build-manifest.json
+Could not find files for /_error in .next/build-manifest.json
+ ⨯ [Error: Cannot find module './vendor-chunks/tailwind-merge.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\server\dev\static-paths-worker.js
+- D:\tiercore\node_modules\next\dist\compiled\jest-worker\processChild.js] {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/ranking/overall'
+}
+Could not find files for /_error in .next/build-manifest.json
+Could not find files for /_error in .next/build-manifest.json
+ ⨯ [Error: Cannot find module './vendor-chunks/tailwind-merge.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\server\dev\static-paths-worker.js
+- D:\tiercore\node_modules\next\dist\compiled\jest-worker\processChild.js] {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/ranking/overall'
+}
+Could not find files for /_error in .next/build-manifest.json
+Could not find files for /_error in .next/build-manifest.json
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: incorrect header check
+ ⨯ ./src/app/ranking/[mode]/page.tsx
+Error:   [31mx[0m Expression expected
+     ,-[[36;1;4mD:\tiercore\src\app\ranking\[mode]\page.tsx[0m:234:1]
+ [2m231[0m |                 </div>
+ [2m232[0m |               )
+ [2m233[0m |             })}
+ [2m234[0m |           </div>
+     : [35;1m          ^[0m
+ [2m235[0m |         </div>
+ [2m236[0m |       </div>
+ [2m236[0m |     </Link>
+     `----
+  [31mx[0m Unterminated regexp literal
+     ,-[[36;1;4mD:\tiercore\src\app\ranking\[mode]\page.tsx[0m:234:1]
+ [2m231[0m |                 </div>
+ [2m232[0m |               )
+ [2m233[0m |             })}
+ [2m234[0m |           </div>
+     : [35;1m           ^^^^^[0m
+ [2m235[0m |         </div>
+ [2m236[0m |       </div>
+ [2m236[0m |     </Link>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/ranking/[mode]/page.tsx
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'D:\tiercore\.next\cache\webpack\client-development\0.pack.gz_' -> 'D:\tiercore\.next\cache\webpack\client-development\0.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack failed from D:\tiercore\.next\cache\webpack\client-development.pack.gz: Error: incorrect header check
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'D:\tiercore\.next\cache\webpack\client-development\0.pack.gz_' -> 'D:\tiercore\.next\cache\webpack\client-development\0.pack.gz'

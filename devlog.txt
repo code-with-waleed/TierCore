@@ -1,0 +1,786 @@
+
+> tiercore@2.0.0 dev
+> next dev
+
+   ▲ Next.js 15.5.19
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.100.56:3000
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 4.1s
+ ○ Compiling /ranking/[mode] ...
+ ✓ Compiled /ranking/[mode] in 4.6s (629 modules)
+ ✓ Compiled in 644ms (249 modules)
+ GET /ranking/overall 200 in 7022ms
+ ○ Compiling / ...
+ ✓ Compiled / in 579ms (624 modules)
+ GET / 200 in 266ms
+ ○ Compiling /api/players ...
+ ✓ Compiled /api/players in 946ms (649 modules)
+ GET /api/players 200 in 1267ms
+ GET /api/settings 200 in 1271ms
+ GET /api/settings 200 in 39ms
+ GET /ranking/overall 200 in 150ms
+ ○ Compiling /api/leaderboard ...
+ ✓ Compiled /api/leaderboard in 912ms (651 modules)
+ GET /api/leaderboard?mode=overall&limit=200&sort= 200 in 1082ms
+ GET /api/leaderboard?mode=overall&limit=200&sort= 200 in 37ms
+ GET /ranking/vanilla 200 in 132ms
+ GET /api/leaderboard?mode=vanilla&limit=200&sort= 200 in 33ms
+ GET /api/leaderboard?mode=vanilla&limit=200&sort= 200 in 28ms
+ GET /ranking/uhc 200 in 51ms
+ GET /api/leaderboard?mode=uhc&limit=200&sort= 200 in 35ms
+ GET /api/leaderboard?mode=uhc&limit=200&sort= 200 in 29ms
+ GET /ranking/overall 200 in 42ms
+ GET /api/leaderboard?mode=overall&limit=200&sort= 200 in 32ms
+ GET /api/leaderboard?mode=overall&limit=200&sort= 200 in 31ms
+ GET /ranking/uhc 200 in 52ms
+ GET /api/leaderboard?mode=uhc&limit=200&sort= 200 in 43ms
+ GET /api/leaderboard?mode=uhc&limit=200&sort= 200 in 24ms
+ GET /ranking/overall 200 in 61ms
+ GET /api/leaderboard?mode=overall&limit=200&sort= 200 in 38ms
+ GET /api/leaderboard?mode=overall&limit=200&sort= 200 in 33ms
+ ○ Compiling /player/[id] ...
+ ✓ Compiled /player/[id] in 723ms (658 modules)
+ GET /player/cmrtptlcl002w4oz926gt8573 200 in 2303ms
+ ✓ Compiled /api/players/[id] in 449ms (660 modules)
+ GET /api/players/cmrtptlcl002w4oz926gt8573 200 in 2207ms
+ GET /api/players/cmrtptlcl002w4oz926gt8573 200 in 53ms
+ GET /api/leaderboard?mode=overall&limit=200&sort= 200 in 46ms
+ GET /api/leaderboard?mode=overall&limit=200&sort= 200 in 33ms
+ GET /player/cmrtptlcl002w4oz926gt8573 200 in 111ms
+ GET /api/players/cmrtptlcl002w4oz926gt8573 200 in 43ms
+ GET /api/players/cmrtptlcl002w4oz926gt8573 200 in 72ms
+ GET /api/leaderboard?mode=overall&limit=200&sort= 200 in 40ms
+ GET /api/leaderboard?mode=overall&limit=200&sort= 200 in 41ms
+ ✓ Compiled in 1163ms (670 modules)
+ GET /ranking/overall 200 in 355ms
+ GET /api/leaderboard?mode=overall&limit=200&sort= 200 in 141ms
+ ✓ Compiled in 1031ms (670 modules)
+ ✓ Compiled in 1ms (415 modules)
+ ✓ Compiled in 0ms (415 modules)
+ ✓ Compiled in 1ms (415 modules)
+ GET /api/leaderboard?mode=overall&limit=200&sort= 200 in 772ms
+ GET /ranking/overall 200 in 868ms
+ ✓ Compiled in 737ms (668 modules)
+ GET /api/leaderboard?mode=overall&limit=200&sort= 200 in 372ms
+ GET /ranking/overall 200 in 455ms
+ ✓ Compiled in 944ms (668 modules)
+ GET /api/leaderboard?mode=overall&limit=200&sort= 200 in 287ms
+ GET /ranking/overall 200 in 394ms
+ ✓ Compiled in 787ms (668 modules)
+ GET /ranking/overall 200 in 348ms
+ GET /api/leaderboard?mode=overall&limit=200&sort= 200 in 78ms
+ ✓ Compiled in 817ms (668 modules)
+ GET /api/leaderboard?mode=overall&limit=200&sort= 200 in 342ms
+ GET /ranking/overall 200 in 394ms
+ ✓ Compiled in 1238ms (668 modules)
+ GET /ranking/overall 200 in 307ms
+ GET /api/leaderboard?mode=overall&limit=200&sort= 200 in 187ms
+ ⨯ ./src/app/ranking/[mode]/page.tsx
+Error:   [31mx[0m Expected '</', got '{'
+     ,-[[36;1;4mD:\tiercore\src\app\ranking\[mode]\page.tsx[0m:119:1]
+ [2m116[0m |           </span>
+ [2m117[0m |         </div>
+ [2m118[0m |       )}
+ [2m119[0m |       {!stat?.tier && (
+     : [35;1m      ^[0m
+ [2m120[0m |         <span className="text-[6px] sm:text-[10px] font-bold uppercase text-white/20 leading-none">---</span>
+ [2m121[0m |       )}
+ [2m121[0m |       <PortalTooltip iconRef={iconRef} show={hovered} onEnter={show} onLeave={hide}>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/ranking/[mode]/page.tsx
+ ○ Compiling /_error ...
+ ⨯ ./src/app/ranking/[mode]/page.tsx
+Error:   [31mx[0m Expected '</', got '{'
+     ,-[[36;1;4mD:\tiercore\src\app\ranking\[mode]\page.tsx[0m:119:1]
+ [2m116[0m |           </span>
+ [2m117[0m |         </div>
+ [2m118[0m |       )}
+ [2m119[0m |       {!stat?.tier && (
+     : [35;1m      ^[0m
+ [2m120[0m |         <span className="text-[6px] sm:text-[10px] font-bold uppercase text-white/20 leading-none">---</span>
+ [2m121[0m |       )}
+ [2m121[0m |       <PortalTooltip iconRef={iconRef} show={hovered} onEnter={show} onLeave={hide}>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/ranking/[mode]/page.tsx
+ GET /ranking/overall 500 in 6209ms
+ GET /ranking/overall 500 in 30ms
+ GET /ranking/overall 500 in 34ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /ranking/overall 500 in 44ms
+ GET /ranking/overall 500 in 35ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled /_error in 1190ms (992 modules)
+ GET /ranking/overall 200 in 229ms
+ GET /ranking/overall 200 in 1189ms
+ ○ Compiling /api/leaderboard ...
+ ✓ Compiled /api/leaderboard in 853ms (606 modules)
+ ✓ Compiled (609 modules)
+ GET /api/leaderboard?mode=overall&limit=200&sort= 200 in 1607ms
+ GET /api/settings 200 in 1630ms
+ ✓ Compiled in 905ms (1016 modules)
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\tiercore\.next\prerender-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\tiercore\\.next\\prerender-manifest.json',
+  page: '/ranking/overall'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\build\swc\options.js
+- D:\tiercore\node_modules\next\dist\build\swc\index.js
+- D:\tiercore\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\tiercore\node_modules\next\dist\server\config.js
+- D:\tiercore\node_modules\next\dist\server\next.js
+- D:\tiercore\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\tiercore\.next\server\pages\_document.js:1:325)
+    at Object.<anonymous> (D:\tiercore\.next\server\pages\_document.js:1:371) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[Error: ENOENT: no such file or directory, open 'D:\tiercore\.next\prerender-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\tiercore\\.next\\prerender-manifest.json',
+  page: '/ranking/overall'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\build\swc\options.js
+- D:\tiercore\node_modules\next\dist\build\swc\index.js
+- D:\tiercore\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\tiercore\node_modules\next\dist\server\config.js
+- D:\tiercore\node_modules\next\dist\server\next.js
+- D:\tiercore\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\tiercore\.next\server\pages\_document.js:1:325)
+    at Object.<anonymous> (D:\tiercore\.next\server\pages\_document.js:1:371) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[Error: ENOENT: no such file or directory, open 'D:\tiercore\.next\prerender-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\tiercore\\.next\\prerender-manifest.json'
+}
+ GET /ranking/overall 500 in 1195ms
+ GET /ranking/overall 500 in 94ms
+ ⨯ Error: Cannot find module './331.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\build\swc\options.js
+- D:\tiercore\node_modules\next\dist\build\swc\index.js
+- D:\tiercore\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\tiercore\node_modules\next\dist\server\config.js
+- D:\tiercore\node_modules\next\dist\server\next.js
+- D:\tiercore\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\tiercore\.next\server\app\api\leaderboard\route.js:1:11625)
+    at Object.<anonymous> (D:\tiercore\.next\server\app\api\leaderboard\route.js:1:11675) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/api/leaderboard'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\build\swc\options.js
+- D:\tiercore\node_modules\next\dist\build\swc\index.js
+- D:\tiercore\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\tiercore\node_modules\next\dist\server\config.js
+- D:\tiercore\node_modules\next\dist\server\next.js
+- D:\tiercore\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\tiercore\.next\server\pages\_document.js:1:325)
+    at Object.<anonymous> (D:\tiercore\.next\server\pages\_document.js:1:371) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+Error: Cannot find module './331.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\build\swc\options.js
+- D:\tiercore\node_modules\next\dist\build\swc\index.js
+- D:\tiercore\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\tiercore\node_modules\next\dist\server\config.js
+- D:\tiercore\node_modules\next\dist\server\next.js
+- D:\tiercore\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\tiercore\.next\server\app\api\leaderboard\route.js:1:11625)
+    at Object.<anonymous> (D:\tiercore\.next\server\app\api\leaderboard\route.js:1:11675) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/api/leaderboard'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\build\swc\options.js
+- D:\tiercore\node_modules\next\dist\build\swc\index.js
+- D:\tiercore\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\tiercore\node_modules\next\dist\server\config.js
+- D:\tiercore\node_modules\next\dist\server\next.js
+- D:\tiercore\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\tiercore\.next\server\pages\_document.js:1:325)
+    at Object.<anonymous> (D:\tiercore\.next\server\pages\_document.js:1:371) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[Error: ENOENT: no such file or directory, open 'D:\tiercore\.next\prerender-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\tiercore\\.next\\prerender-manifest.json'
+}
+ GET /api/leaderboard?mode=overall&limit=200&sort= 500 in 654ms
+ GET /api/leaderboard?mode=overall&limit=200&sort= 500 in 97ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\tiercore\.next\prerender-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\tiercore\\.next\\prerender-manifest.json',
+  page: '/ranking/overall'
+}
+ ⨯ Failed to generate static paths for /ranking/[mode]:
+[Error: Cannot find module './vendor-chunks/next.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\server\dev\static-paths-worker.js
+- D:\tiercore\node_modules\next\dist\compiled\jest-worker\processChild.js] {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+ ⨯ Failed to generate static paths for /ranking/[mode]:
+[Error: Cannot find module './vendor-chunks/next.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\server\dev\static-paths-worker.js
+- D:\tiercore\node_modules\next\dist\compiled\jest-worker\processChild.js] {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\build\swc\options.js
+- D:\tiercore\node_modules\next\dist\build\swc\index.js
+- D:\tiercore\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\tiercore\node_modules\next\dist\server\config.js
+- D:\tiercore\node_modules\next\dist\server\next.js
+- D:\tiercore\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\tiercore\.next\server\pages\_document.js:1:325)
+    at Object.<anonymous> (D:\tiercore\.next\server\pages\_document.js:1:371) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[Error: ENOENT: no such file or directory, open 'D:\tiercore\.next\prerender-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\tiercore\\.next\\prerender-manifest.json',
+  page: '/ranking/overall'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\build\swc\options.js
+- D:\tiercore\node_modules\next\dist\build\swc\index.js
+- D:\tiercore\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\tiercore\node_modules\next\dist\server\config.js
+- D:\tiercore\node_modules\next\dist\server\next.js
+- D:\tiercore\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\tiercore\.next\server\pages\_document.js:1:325)
+    at Object.<anonymous> (D:\tiercore\.next\server\pages\_document.js:1:371) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[Error: ENOENT: no such file or directory, open 'D:\tiercore\.next\prerender-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\tiercore\\.next\\prerender-manifest.json'
+}
+ GET /ranking/overall 500 in 944ms
+ GET /ranking/overall 500 in 205ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\tiercore\.next\build-manifest.json'] {
+  type: 'Error',
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\tiercore\\.next\\build-manifest.json',
+  page: '/ranking/overall'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\tiercore\.next\server\pages-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\tiercore\\.next\\server\\pages-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\tiercore\.next\build-manifest.json'] {
+  type: 'Error',
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\tiercore\\.next\\build-manifest.json',
+  page: '/ranking/overall'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\tiercore\.next\server\pages-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\tiercore\\.next\\server\\pages-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\tiercore\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\tiercore\\.next\\routes-manifest.json'
+}
+ GET /ranking/overall 500 in 2037ms
+ GET /ranking/overall 500 in 69ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\tiercore\.next\build-manifest.json'] {
+  type: 'Error',
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\tiercore\\.next\\build-manifest.json',
+  page: '/ranking/overall'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\build\swc\options.js
+- D:\tiercore\node_modules\next\dist\build\swc\index.js
+- D:\tiercore\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\tiercore\node_modules\next\dist\server\config.js
+- D:\tiercore\node_modules\next\dist\server\next.js
+- D:\tiercore\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\tiercore\.next\server\pages\_document.js:1:325)
+    at Object.<anonymous> (D:\tiercore\.next\server\pages\_document.js:1:371) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[Error: ENOENT: no such file or directory, open 'D:\tiercore\.next\build-manifest.json'] {
+  type: 'Error',
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\tiercore\\.next\\build-manifest.json',
+  page: '/ranking/overall'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\build\swc\options.js
+- D:\tiercore\node_modules\next\dist\build\swc\index.js
+- D:\tiercore\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\tiercore\node_modules\next\dist\server\config.js
+- D:\tiercore\node_modules\next\dist\server\next.js
+- D:\tiercore\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\tiercore\.next\server\pages\_document.js:1:325)
+    at Object.<anonymous> (D:\tiercore\.next\server\pages\_document.js:1:371) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[Error: ENOENT: no such file or directory, open 'D:\tiercore\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\tiercore\\.next\\routes-manifest.json'
+}
+ GET /ranking/overall 500 in 1865ms
+ GET /ranking/overall 500 in 78ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\tiercore\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\tiercore\\.next\\routes-manifest.json',
+  page: '/ranking/overall'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\build\swc\options.js
+- D:\tiercore\node_modules\next\dist\build\swc\index.js
+- D:\tiercore\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\tiercore\node_modules\next\dist\server\config.js
+- D:\tiercore\node_modules\next\dist\server\next.js
+- D:\tiercore\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\tiercore\.next\server\pages\_document.js:1:325)
+    at Object.<anonymous> (D:\tiercore\.next\server\pages\_document.js:1:371) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[Error: ENOENT: no such file or directory, open 'D:\tiercore\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\tiercore\\.next\\routes-manifest.json',
+  page: '/ranking/overall'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\build\swc\options.js
+- D:\tiercore\node_modules\next\dist\build\swc\index.js
+- D:\tiercore\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\tiercore\node_modules\next\dist\server\config.js
+- D:\tiercore\node_modules\next\dist\server\next.js
+- D:\tiercore\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\tiercore\.next\server\pages\_document.js:1:325)
+    at Object.<anonymous> (D:\tiercore\.next\server\pages\_document.js:1:371) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[Error: ENOENT: no such file or directory, open 'D:\tiercore\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\tiercore\\.next\\routes-manifest.json'
+}
+ GET /ranking/overall 500 in 3082ms
+ GET /ranking/overall 500 in 106ms
+ ⨯ Error: Could not find the module "D:\tiercore\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '3734322546'
+}
+ ⨯ Error: Could not find the module "D:\tiercore\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3272188702'
+}
+ ⨯ Error: Could not find the module "D:\tiercore\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3272188702'
+}
+ ⨯ Error: Could not find the module "D:\tiercore\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3272188702'
+}
+ ⨯ Error: Could not find the module "D:\tiercore\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '3734322546'
+}
+ ⨯ Error: Could not find the module "D:\tiercore\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '3734322546'
+}
+ ⨯ [TypeError: __webpack_modules__[moduleId] is not a function] {
+  digest: '4291263387'
+}
+ ⨯ Error: Could not find the module "D:\tiercore\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '3734322546'
+}
+[TypeError: __webpack_modules__[moduleId] is not a function]
+ ⨯ [TypeError: __webpack_modules__[moduleId] is not a function]
+ ⨯ [TypeError: __webpack_modules__[moduleId] is not a function] {
+  page: '/ranking/overall'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\build\swc\options.js
+- D:\tiercore\node_modules\next\dist\build\swc\index.js
+- D:\tiercore\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\tiercore\node_modules\next\dist\server\config.js
+- D:\tiercore\node_modules\next\dist\server\next.js
+- D:\tiercore\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\tiercore\.next\server\pages\_document.js:1:325)
+    at Object.<anonymous> (D:\tiercore\.next\server\pages\_document.js:1:371) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+TypeError: Cannot read properties of undefined (reading '/_app')
+    at new Promise (<anonymous>)
+ ⨯ TypeError: Cannot read properties of undefined (reading '/_app')
+    at new Promise (<anonymous>)
+[TypeError: __webpack_modules__[moduleId] is not a function] {
+  page: '/ranking/overall'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\build\swc\options.js
+- D:\tiercore\node_modules\next\dist\build\swc\index.js
+- D:\tiercore\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\tiercore\node_modules\next\dist\server\config.js
+- D:\tiercore\node_modules\next\dist\server\next.js
+- D:\tiercore\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\tiercore\.next\server\pages\_document.js:1:325)
+    at Object.<anonymous> (D:\tiercore\.next\server\pages\_document.js:1:371) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+TypeError: Cannot read properties of undefined (reading '/_app')
+    at new Promise (<anonymous>)
+ ⨯ TypeError: Cannot read properties of undefined (reading '/_app')
+    at new Promise (<anonymous>)
+TypeError: Cannot read properties of undefined (reading '/_app')
+    at new Promise (<anonymous>)
+ GET /ranking/overall 500 in 4093ms
+ GET /ranking/overall 500 in 259ms
+ ⨯ Error: Could not find the module "D:\tiercore\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '3734322546'
+}
+ ⨯ Error: Could not find the module "D:\tiercore\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3272188702'
+}
+ ⨯ Error: Could not find the module "D:\tiercore\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3272188702'
+}
+ ⨯ Error: Could not find the module "D:\tiercore\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3272188702'
+}
+ ⨯ Error: Could not find the module "D:\tiercore\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '3734322546'
+}
+ ⨯ Error: Could not find the module "D:\tiercore\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '3734322546'
+}
+ ⨯ [TypeError: __webpack_modules__[moduleId] is not a function] {
+  digest: '4291263387'
+}
+ ⨯ Error: Could not find the module "D:\tiercore\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '3734322546'
+}
+[TypeError: __webpack_modules__[moduleId] is not a function]
+ ⨯ [TypeError: __webpack_modules__[moduleId] is not a function]
+ ⨯ [TypeError: __webpack_modules__[moduleId] is not a function] {
+  page: '/ranking/overall'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\build\swc\options.js
+- D:\tiercore\node_modules\next\dist\build\swc\index.js
+- D:\tiercore\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\tiercore\node_modules\next\dist\server\config.js
+- D:\tiercore\node_modules\next\dist\server\next.js
+- D:\tiercore\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\tiercore\.next\server\pages\_document.js:1:325)
+    at Object.<anonymous> (D:\tiercore\.next\server\pages\_document.js:1:371) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+TypeError: Cannot read properties of undefined (reading '/_app')
+    at new Promise (<anonymous>)
+ ⨯ TypeError: Cannot read properties of undefined (reading '/_app')
+    at new Promise (<anonymous>)
+[TypeError: __webpack_modules__[moduleId] is not a function] {
+  page: '/ranking/overall'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\build\swc\options.js
+- D:\tiercore\node_modules\next\dist\build\swc\index.js
+- D:\tiercore\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\tiercore\node_modules\next\dist\server\config.js
+- D:\tiercore\node_modules\next\dist\server\next.js
+- D:\tiercore\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\tiercore\.next\server\pages\_document.js:1:325)
+    at Object.<anonymous> (D:\tiercore\.next\server\pages\_document.js:1:371) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+TypeError: Cannot read properties of undefined (reading '/_app')
+    at new Promise (<anonymous>)
+ ⨯ TypeError: Cannot read properties of undefined (reading '/_app')
+    at new Promise (<anonymous>)
+TypeError: Cannot read properties of undefined (reading '/_app')
+    at new Promise (<anonymous>)
+ GET /ranking/overall 500 in 3405ms
+ GET /ranking/overall 500 in 109ms
+ ⨯ Error: Cannot find module './331.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\build\swc\options.js
+- D:\tiercore\node_modules\next\dist\build\swc\index.js
+- D:\tiercore\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\tiercore\node_modules\next\dist\server\config.js
+- D:\tiercore\node_modules\next\dist\server\next.js
+- D:\tiercore\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\tiercore\.next\server\app\page.js:2:8409)
+    at Object.<anonymous> (D:\tiercore\.next\server\app\page.js:2:8462) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\build\swc\options.js
+- D:\tiercore\node_modules\next\dist\build\swc\index.js
+- D:\tiercore\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\tiercore\node_modules\next\dist\server\config.js
+- D:\tiercore\node_modules\next\dist\server\next.js
+- D:\tiercore\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\tiercore\.next\server\pages\_document.js:1:325)
+    at Object.<anonymous> (D:\tiercore\.next\server\pages\_document.js:1:371) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+TypeError: Cannot read properties of undefined (reading '/_app')
+    at new Promise (<anonymous>)
+ ⨯ TypeError: Cannot read properties of undefined (reading '/_app')
+    at new Promise (<anonymous>)
+Error: Cannot find module './331.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\build\swc\options.js
+- D:\tiercore\node_modules\next\dist\build\swc\index.js
+- D:\tiercore\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\tiercore\node_modules\next\dist\server\config.js
+- D:\tiercore\node_modules\next\dist\server\next.js
+- D:\tiercore\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\tiercore\.next\server\app\page.js:2:8409)
+    at Object.<anonymous> (D:\tiercore\.next\server\app\page.js:2:8462) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- D:\tiercore\.next\server\webpack-runtime.js
+- D:\tiercore\.next\server\app\ranking\[mode]\page.js
+- D:\tiercore\node_modules\next\dist\server\require.js
+- D:\tiercore\node_modules\next\dist\server\load-components.js
+- D:\tiercore\node_modules\next\dist\build\utils.js
+- D:\tiercore\node_modules\next\dist\build\swc\options.js
+- D:\tiercore\node_modules\next\dist\build\swc\index.js
+- D:\tiercore\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\tiercore\node_modules\next\dist\server\config.js
+- D:\tiercore\node_modules\next\dist\server\next.js
+- D:\tiercore\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\tiercore\.next\server\pages\_document.js:1:325)
+    at Object.<anonymous> (D:\tiercore\.next\server\pages\_document.js:1:371) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+TypeError: Cannot read properties of undefined (reading '/_app')
+    at new Promise (<anonymous>)
+ ⨯ TypeError: Cannot read properties of undefined (reading '/_app')
+    at new Promise (<anonymous>)
+TypeError: Cannot read properties of undefined (reading '/_app')
+    at new Promise (<anonymous>)
+ GET / 500 in 261ms
+ GET / 500 in 106ms

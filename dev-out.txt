@@ -1,0 +1,193 @@
+   ▲ Next.js 15.5.19
+   - Local:        http://localhost:3005
+   - Network:      http://192.168.100.56:3005
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 4.4s
+ ○ Compiling /ranking/[mode] ...
+ ✓ Compiled /ranking/[mode] in 4.4s (627 modules)
+ ✓ Compiled in 500ms (248 modules)
+ GET /ranking/overall 200 in 6232ms
+ ✓ Compiled / in 441ms (616 modules)
+ GET / 200 in 998ms
+ ○ Compiling /api/players ...
+ ✓ Compiled /api/players in 1096ms (641 modules)
+ GET /api/settings 200 in 1423ms
+ GET /api/players 200 in 1427ms
+ GET /api/settings 200 in 26ms
+ ✓ Compiled /ranking/[mode] in 310ms (409 modules)
+ GET /ranking/overall 200 in 540ms
+ ✓ Compiled /api/leaderboard in 335ms (649 modules)
+ GET /api/leaderboard?mode=overall&limit=50&sort= 200 in 443ms
+ GET /api/leaderboard?mode=overall&limit=50&sort= 200 in 36ms
+ ○ Compiling /player/[id] ...
+ ✓ Compiled /player/[id] in 709ms (656 modules)
+ GET /player/cmrtptlcl002w4oz926gt8573 200 in 625ms
+ GET /player/cmrtptilp000y4oz9bwopzmfo 200 in 2376ms
+ GET /player/cmrtptnh5004g4oz9pihwn7fy 200 in 186ms
+ ✓ Compiled /api/players/[id] in 363ms (658 modules)
+ GET /api/players/cmrtptnh5004g4oz9pihwn7fy 200 in 1692ms
+ GET /api/players/cmrtptnh5004g4oz9pihwn7fy 200 in 42ms
+ GET /api/leaderboard?mode=overall&limit=50&sort= 200 in 66ms
+ GET /api/leaderboard?mode=overall&limit=50&sort= 200 in 36ms
+ GET /ranking/overall 200 in 579ms
+ GET /api/settings 200 in 59ms
+ GET /api/leaderboard?mode=overall&limit=50&sort= 200 in 72ms
+ ✓ Compiled in 1433ms (668 modules)
+ ✓ Compiled in 1ms (414 modules)
+ ✓ Compiled in 0ms (414 modules)
+ ✓ Compiled in 0ms (414 modules)
+ GET /api/leaderboard?mode=overall&limit=50&sort= 200 in 1051ms
+ GET /ranking/overall 200 in 1237ms
+ ✓ Compiled in 6.5s (644 modules)
+ GET /ranking/overall 200 in 695ms
+ ○ Compiling /api/leaderboard ...
+ ✓ Compiled /api/leaderboard in 887ms (412 modules)
+ GET /api/leaderboard?mode=overall&limit=50&sort= 200 in 1156ms
+ ✓ Compiled in 1979ms (666 modules)
+ GET /ranking/overall 200 in 399ms
+ GET /api/leaderboard?mode=overall&limit=50&sort= 200 in 83ms
+ ○ Compiling /api/leaderboard ...
+ ✓ Compiled /api/leaderboard in 1291ms (666 modules)
+ GET /api/leaderboard?mode=overall&limit=50&sort= 200 in 877ms
+ GET /ranking/overall 200 in 318ms
+ ✓ Compiled in 574ms (666 modules)
+ GET /api/leaderboard?mode=overall&limit=50&sort= 200 in 196ms
+ GET /ranking/overall 200 in 121ms
+ ✓ Compiled in 642ms (666 modules)
+ ✓ Compiled in 0ms (412 modules)
+ ✓ Compiled in 0ms (412 modules)
+ ✓ Compiled in 0ms (412 modules)
+ GET /api/leaderboard?mode=overall&limit=50&sort= 200 in 823ms
+ GET /ranking/overall 200 in 884ms
+ ✓ Compiled in 887ms (666 modules)
+ ✓ Compiled in 0ms (412 modules)
+ ✓ Compiled in 0ms (412 modules)
+ ✓ Compiled in 0ms (412 modules)
+ GET /api/leaderboard?mode=overall&limit=50&sort= 200 in 1119ms
+ GET /ranking/overall 200 in 1108ms
+ ✓ Compiled in 797ms (666 modules)
+ ✓ Compiled in 0ms (412 modules)
+ ✓ Compiled in 0ms (412 modules)
+ ✓ Compiled in 0ms (412 modules)
+ GET /api/leaderboard?mode=overall&limit=50&sort= 200 in 1241ms
+ GET /ranking/overall 200 in 1380ms
+ GET /player/cmrtptjm8001q4oz9ql1zgeo2 200 in 78ms
+ ✓ Compiled /api/players/[id] in 427ms (414 modules)
+ GET /api/players/cmrtptjm8001q4oz9ql1zgeo2 200 in 593ms
+ GET /api/players/cmrtptjm8001q4oz9ql1zgeo2 200 in 42ms
+ GET /api/leaderboard?mode=overall&limit=50&sort= 200 in 46ms
+ GET /api/leaderboard?mode=overall&limit=50&sort= 200 in 33ms
+ GET /player/cmrtptlcl002w4oz926gt8573 200 in 108ms
+ GET /api/players/cmrtptlcl002w4oz926gt8573 200 in 40ms
+ GET /api/players/cmrtptlcl002w4oz926gt8573 200 in 38ms
+ GET /api/leaderboard?mode=overall&limit=50&sort= 200 in 32ms
+ GET /api/leaderboard?mode=overall&limit=50&sort= 200 in 35ms
+ GET / 200 in 56ms
+ ○ Compiling /api/settings ...
+ ✓ Compiled /api/settings in 634ms (412 modules)
+ ✓ Compiled (414 modules)
+ GET /api/settings 200 in 1031ms
+ GET /api/players 200 in 1035ms
+ GET /api/players 200 in 46ms
+ GET /api/settings 200 in 48ms
+ GET /ranking/overall 200 in 147ms
+ ✓ Compiled /api/leaderboard in 347ms (416 modules)
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 1383ms (1016 modules)
+ GET /api/leaderboard?mode=overall&limit=50&sort= 500 in 3123ms
+ GET /api/leaderboard?mode=overall&limit=50&sort= 200 in 115ms
+ GET /ranking/overall 500 in 2732ms
+ GET /ranking/overall 500 in 1322ms
+ GET /ranking/overall 500 in 1387ms
+ GET /ranking/overall 500 in 1311ms
+ ✓ Compiled in 1423ms (894 modules)
+ ✓ Compiled in 952ms (894 modules)
+ ✓ Compiled in 793ms (894 modules)
+ ✓ Compiled in 756ms (894 modules)
+ ✓ Compiled in 584ms (894 modules)
+ ✓ Compiled in 741ms (894 modules)
+ ✓ Compiled in 475ms (894 modules)
+ ✓ Compiled in 1517ms (894 modules)
+ ✓ Compiled in 550ms (894 modules)
+ ✓ Compiled in 1438ms (894 modules)
+ ✓ Compiled in 824ms (894 modules)
+ ✓ Compiled in 589ms (894 modules)
+ ✓ Compiled in 1514ms (894 modules)
+ ✓ Compiled in 804ms (894 modules)
+ ✓ Compiled in 675ms (894 modules)
+ ✓ Compiled in 1381ms (894 modules)
+ ✓ Compiled in 574ms (894 modules)
+ ✓ Compiled in 793ms (894 modules)
+ ✓ Compiled in 646ms (894 modules)
+ ✓ Compiled in 757ms (894 modules)
+ ✓ Compiled in 707ms (894 modules)
+ ✓ Compiled in 606ms (894 modules)
+ ✓ Compiled in 612ms (894 modules)
+ ✓ Compiled in 658ms (894 modules)
+ ✓ Compiled in 632ms (894 modules)
+ ✓ Compiled in 1789ms (894 modules)
+ ✓ Compiled in 1599ms (894 modules)
+ ✓ Compiled in 776ms (894 modules)
+ ✓ Compiled in 720ms (894 modules)
+ ✓ Compiled in 778ms (894 modules)
+ ✓ Compiled in 1598ms (894 modules)
+ ✓ Compiled in 775ms (894 modules)
+ ✓ Compiled in 708ms (894 modules)
+ ✓ Compiled in 766ms (894 modules)
+ ✓ Compiled in 514ms (894 modules)
+ ✓ Compiled in 556ms (894 modules)
+ ✓ Compiled in 899ms (894 modules)
+ ✓ Compiled in 713ms (894 modules)
+ ✓ Compiled in 844ms (894 modules)
+ ✓ Compiled in 591ms (894 modules)
+ ✓ Compiled in 776ms (894 modules)
+ ✓ Compiled in 762ms (894 modules)
+ ✓ Compiled in 889ms (894 modules)
+ ✓ Compiled in 582ms (894 modules)
+ ✓ Compiled in 632ms (894 modules)
+ ✓ Compiled in 679ms (894 modules)
+ ✓ Compiled in 951ms (894 modules)
+ ✓ Compiled in 650ms (894 modules)
+ ✓ Compiled in 847ms (894 modules)
+ ✓ Compiled in 628ms (894 modules)
+ ✓ Compiled in 840ms (894 modules)
+ ✓ Compiled in 789ms (894 modules)
+ ✓ Compiled in 785ms (894 modules)
+ ✓ Compiled in 736ms (894 modules)
+ ✓ Compiled in 748ms (894 modules)
+ ✓ Compiled in 904ms (894 modules)
+ ✓ Compiled in 687ms (894 modules)
+ ✓ Compiled in 802ms (894 modules)
+ ✓ Compiled in 506ms (894 modules)
+ ✓ Compiled in 550ms (894 modules)
+ ✓ Compiled in 522ms (894 modules)
+ ✓ Compiled in 748ms (894 modules)
+ ✓ Compiled in 620ms (894 modules)
+ ✓ Compiled in 822ms (894 modules)
+ ✓ Compiled in 714ms (894 modules)
+ ✓ Compiled in 1692ms (894 modules)
+ ✓ Compiled in 671ms (894 modules)
+ ✓ Compiled in 665ms (894 modules)
+ ✓ Compiled in 698ms (894 modules)
+ ✓ Compiled in 483ms (894 modules)
+ ✓ Compiled in 663ms (894 modules)
+ ✓ Compiled in 755ms (894 modules)
+ ✓ Compiled in 680ms (894 modules)
+ ✓ Compiled in 694ms (894 modules)
+ ✓ Compiled in 524ms (894 modules)
+ ✓ Compiled in 556ms (894 modules)
+ ✓ Compiled in 515ms (894 modules)
+ ✓ Compiled in 1097ms (894 modules)
+ ✓ Compiled in 670ms (894 modules)
+ ✓ Compiled in 1127ms (894 modules)
+ ✓ Compiled in 603ms (894 modules)
+ ✓ Compiled in 1046ms (894 modules)
+ ✓ Compiled in 1173ms (894 modules)
+ ✓ Compiled in 2.6s (894 modules)
+ ✓ Compiled in 812ms (894 modules)
+ ✓ Compiled in 1248ms (894 modules)
+ ✓ Compiled in 633ms (894 modules)
+ ✓ Compiled in 911ms (894 modules)
+ ✓ Compiled in 679ms (894 modules)
