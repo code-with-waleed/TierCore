@@ -57,14 +57,14 @@ export default function ModeratorPage() {
                 { p1: 'AcePvP', p2: 'NinjaBoi', mode: 'axe', submitted: '12m ago' },
                 { p1: 'Pro123', p2: 'NoobSlayer', mode: 'pot', submitted: '23m ago' },
               ].map((match, i) => (
-                <div key={i} className="flex items-center justify-between rounded-lg bg-card p-3 text-sm">
-                  <div className="flex items-center gap-3">
+                <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-lg bg-card p-3 text-sm">
+                  <div className="flex items-center gap-3 flex-wrap">
                     <span className="font-medium">{match.p1}</span>
                     <span className="text-muted-foreground">vs</span>
                     <span className="font-medium">{match.p2}</span>
                     <span className="rounded bg-accent px-2 py-0.5 text-xs text-muted-foreground uppercase">{match.mode}</span>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 flex-wrap">
                     <span className="text-xs text-muted-foreground">{match.submitted}</span>
                     <button className="rounded-lg bg-green-500/20 px-3 py-1 text-xs font-medium text-green-400 hover:bg-green-500/30 transition-colors">
                       Approve
@@ -86,16 +86,16 @@ export default function ModeratorPage() {
                 { player: 'NewAcc123', reason: 'New account, high points', severity: 'medium' as const },
                 { player: 'VPNUser', reason: 'Multiple accounts from same IP', severity: 'low' as const },
               ].map((flag, i) => (
-                <div key={i} className="flex items-center justify-between rounded-lg bg-card p-3 text-sm">
-                  <div className="flex items-center gap-3">
+                <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-lg bg-card p-3 text-sm">
+                  <div className="flex items-center gap-3 flex-wrap">
                     <span className={cn(
-                      'h-2 w-2 rounded-full',
+                      'h-2 w-2 rounded-full flex-shrink-0',
                       flag.severity === 'high' && 'bg-red-500',
                       flag.severity === 'medium' && 'bg-yellow-500',
                       flag.severity === 'low' && 'bg-gray-500',
                     )} />
                     <span className="font-medium">{flag.player}</span>
-                    <span className="text-muted-foreground">{flag.reason}</span>
+                    <span className="text-muted-foreground truncate max-w-[200px] sm:max-w-none">{flag.reason}</span>
                   </div>
                   <button className="rounded-lg bg-accent px-3 py-1 text-xs font-medium hover:bg-accent/80 transition-colors">
                     Review

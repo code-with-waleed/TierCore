@@ -108,15 +108,25 @@ export default function AdminPlayersPage() {
   async function editPlayer() {
     if (!editPlayerId) return
     const tierKey = editTier || getTierKeyForPoints(parseInt(editPoints) || 0)
-    const r = await fetch(`/api/players/${editPlayerId}/mode`, {
+
+    const r1 = await fetch(`/api/players/${editPlayerId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mode: editMode, tierKey, points: parseInt(editPoints) || 0, region: editRegion }),
+      body: JSON.stringify({ region: editRegion }),
     })
-    if (r.ok) {
+    const r2 = await fetch(`/api/players/${editPlayerId}/mode`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mode: editMode, tierKey, points: parseInt(editPoints) || 0 }),
+    })
+    if (r1.ok && r2.ok) {
       setMsg('Player updated')
       setEditPlayerId(''); setEditPlayerLabel(''); setEditSearch(''); setEditTier('')
-    } else { const e = await r.json(); setMsg(`Error: ${e.error}`) }
+    } else {
+      const e1 = r1.ok ? null : await r1.json()
+      const e2 = r2.ok ? null : await r2.json()
+      setMsg(`Error: ${e1?.error ?? e2?.error ?? 'Update failed'}`)
+    }
   }
 
   return (

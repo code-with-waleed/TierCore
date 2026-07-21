@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { DEFAULT_TIERS, TIER_POINTS, TIER_ORDER } from '@/lib/points'
+import { DEFAULT_TIERS, TIER_POINTS, TIER_ORDER, COMBAT_RANKS } from '@/lib/points'
 import { GAME_MODES } from '@/lib/game-modes'
+import { RANK_EMBLEMS } from '@/lib/rank-emblems'
 
 export default function AdminSettingsPage() {
-  const [tab, setTab] = useState<'tiers' | 'modes'>('tiers')
+  const [tab, setTab] = useState<'tiers' | 'modes' | 'ranks'>('tiers')
   const [serverIp, setServerIp] = useState('')
   const [totalTournaments, setTotalTournaments] = useState('0')
   const [ipSaved, setIpSaved] = useState(false)
@@ -92,6 +93,7 @@ export default function AdminSettingsPage() {
       <div className="flex gap-2 mb-6">
         <button onClick={() => setTab('tiers')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${tab === 'tiers' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'bg-card border border-border/50 text-foreground/70'}`}>Tiers</button>
         <button onClick={() => setTab('modes')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${tab === 'modes' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'bg-card border border-border/50 text-foreground/70'}`}>Game Modes</button>
+        <button onClick={() => setTab('ranks')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${tab === 'ranks' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'bg-card border border-border/50 text-foreground/70'}`}>Ranks</button>
       </div>
 
       {tab === 'tiers' && (
@@ -109,7 +111,7 @@ export default function AdminSettingsPage() {
               </tr>
             </thead>
             <tbody>
-              {TIER_ORDER.map((key, i) => {
+              {TIER_ORDER.filter(k => !k.startsWith('r')).map((key, i) => {
                 const t = DEFAULT_TIERS.find(t => t.key === key)!
                 return (
                   <tr key={key} className="border-b border-border/30">
@@ -139,6 +141,91 @@ export default function AdminSettingsPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {tab === 'ranks' && (
+        <div className="space-y-4">
+          <div className="rounded-xl border border-border/50 bg-card/50 p-6">
+            <h2 className="font-bold text-lg mb-1">Combat Ranks</h2>
+            <p className="text-sm text-foreground/70 mb-6">Total points determine your combat rank. Each badge is a mark of prestige.</p>
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {COMBAT_RANKS.map(rank => {
+                const Emblem = RANK_EMBLEMS[rank.key]
+                return (
+                  <div key={rank.key} className="group relative overflow-hidden rounded-2xl border p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl" style={{
+                    borderColor: `${rank.color}40`,
+                    background: `linear-gradient(135deg, ${rank.color}12 0%, transparent 50%, ${rank.color}08 100%)`,
+                  }}>
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{
+                      background: `radial-gradient(600px circle at 50% 0%, ${rank.color}15 0%, transparent 70%)`,
+                    }} />
+                    <div className="relative z-10 flex items-center gap-4">
+                      <div className="flex-shrink-0">
+                        {Emblem && <Emblem size={52} glow />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-lg font-black tracking-tight" style={{ color: rank.color }}>{rank.name}</h3>
+                          <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full" style={{
+                            backgroundColor: `${rank.color}20`,
+                            color: rank.color,
+                            border: `1px solid ${rank.color}30`,
+                          }}>
+                            Rank
+                          </span>
+                        </div>
+                        <div className="mt-1 flex items-center gap-2">
+                          <span className="font-mono text-sm font-bold" style={{ color: rank.color }}>{rank.minPoints}</span>
+                          <span className="text-foreground/40 text-xs">—</span>
+                          <span className="font-mono text-sm font-bold" style={{ color: rank.color }}>{rank.maxPoints}</span>
+                          <span className="text-foreground/50 text-xs ml-1">points</span>
+                        </div>
+                        <div className="mt-2 flex items-center gap-1.5">
+                          <div className="h-1.5 flex-1 rounded-full overflow-hidden" style={{ backgroundColor: `${rank.color}20` }}>
+                            <div className="h-full rounded-full transition-all duration-500" style={{
+                              width: '100%',
+                              background: `linear-gradient(90deg, ${rank.color}40, ${rank.color})`,
+                            }} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-border/50 bg-card/50 p-6">
+            <h2 className="font-bold text-lg mb-1">Tag Preview</h2>
+            <p className="text-sm text-foreground/70 mb-6">How rank tags appear on leaderboards and profiles.</p>
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              {[...COMBAT_RANKS].reverse().slice(0, 6).map(rank => {
+                const Emblem = RANK_EMBLEMS[rank.key]
+                return (
+                  <div key={rank.key} className="flex items-center gap-3 rounded-xl border p-3" style={{
+                    borderColor: `${rank.color}25`,
+                    background: `linear-gradient(135deg, ${rank.color}08 0%, transparent 100%)`,
+                  }}>
+                    <div className="flex-shrink-0">{Emblem && <Emblem size={36} />}</div>
+                    <div className="flex-1">
+                      <div className="text-sm font-bold" style={{ color: rank.color }}>{rank.name}</div>
+                      <div className="text-[10px] text-foreground/50 font-mono">{rank.minPoints}–{rank.maxPoints} pts</div>
+                    </div>
+                    <div className="px-3 py-1 rounded-lg text-xs font-bold shadow-sm" style={{
+                      backgroundColor: `${rank.color}18`,
+                      color: rank.color,
+                      border: `1px solid ${rank.color}30`,
+                      boxShadow: `0 0 8px ${rank.color}20`,
+                    }}>
+                      {rank.name}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
           </div>
         </div>
       )}

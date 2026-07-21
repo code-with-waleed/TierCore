@@ -20,7 +20,7 @@ export function Footer() {
           <div>
             <h3 className="text-sm font-semibold mb-3">Platform</h3>
             <div className="flex flex-col gap-2">
-              <Link href="/leaderboard" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Leaderboard</Link>
+              <Link href="/ranking/overall" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Ranking</Link>
               <Link href="/ranking/sword" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Ranking</Link>
               <Link href="/matches" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Matches</Link>
               <Link href="/api/docs" className="text-sm text-muted-foreground hover:text-foreground transition-colors">API Docs</Link>

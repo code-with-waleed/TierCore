@@ -10,9 +10,16 @@ export default function AdminMatchesPage() {
   const [winner, setWinner] = useState<'player1' | 'player2' | 'draw'>('player1')
   const [mode, setMode] = useState('sword')
   const [msg, setMsg] = useState('')
-  const [tab, setTab] = useState<'submit' | 'list'>('list')
+  const [tab, setTab] = useState<'submit' | 'list' | 'remove'>('list')
 
   const MODES = ['sword', 'axe', 'pot', 'nethpot', 'uhc', 'mace', 'smp', 'vanilla']
+
+  // Remove panel state
+  const [removeSearch, setRemoveSearch] = useState('')
+  const [removeResults, setRemoveResults] = useState<any[]>([])
+  const [selectedPlayer, setSelectedPlayer] = useState<any>(null)
+  const [removing, setRemoving] = useState(false)
+  const [confirmAll, setConfirmAll] = useState<'none' | 'first' | 'second'>('none')
 
   useEffect(() => {
     fetchPlayers(); fetchMatches()
@@ -56,6 +63,45 @@ export default function AdminMatchesPage() {
     else setMsg('❌ Failed to reject')
   }
 
+  async function removePlayerMatches() {
+    if (!selectedPlayer) return
+    setRemoving(true); setMsg('')
+    try {
+      const r = await fetch('/api/admin/clear-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ playerId: selectedPlayer.id }),
+      })
+      if (r.ok) {
+        setMsg(`✅ Removed all matches for ${selectedPlayer.username}`)
+        setSelectedPlayer(null); setRemoveSearch(''); setRemoveResults([])
+        fetchMatches(); fetchPlayers()
+      } else { setMsg('❌ Failed to remove matches') }
+    } catch { setMsg('❌ Failed to remove matches') }
+    setRemoving(false)
+  }
+
+  async function removeAllMatches() {
+    setRemoving(true); setMsg('')
+    try {
+      const r = await fetch('/api/admin/clear-data', { method: 'POST' })
+      if (r.ok) {
+        setMsg('✅ All matches cleared!')
+        setConfirmAll('none')
+        fetchMatches(); fetchPlayers()
+      } else { setMsg('❌ Failed to clear matches') }
+    } catch { setMsg('❌ Failed to clear matches') }
+    setRemoving(false)
+  }
+
+  function searchPlayers(query: string) {
+    setRemoveSearch(query)
+    if (!query || query.length < 1) { setRemoveResults([]); return }
+    const q = query.toLowerCase()
+    const results = players.filter(p => p.username.toLowerCase().includes(q)).slice(0, 10)
+    setRemoveResults(results)
+  }
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <h1 className="text-2xl font-black mb-6">Match Management</h1>
@@ -63,7 +109,14 @@ export default function AdminMatchesPage() {
       <div className="flex gap-2 mb-6">
         <button onClick={() => setTab('list')} className={cn('rounded-lg px-4 py-2 text-sm font-medium transition-colors', tab === 'list' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'bg-card border border-border/50 text-muted-foreground')}>Match List</button>
         <button onClick={() => setTab('submit')} className={cn('rounded-lg px-4 py-2 text-sm font-medium transition-colors', tab === 'submit' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'bg-card border border-border/50 text-muted-foreground')}>Submit Match</button>
+        <button onClick={() => setTab('remove')} className={cn('rounded-lg px-4 py-2 text-sm font-medium transition-colors', tab === 'remove' ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-card border border-border/50 text-muted-foreground')}>Remove Matches</button>
       </div>
+
+      {msg && (
+        <div className={cn('mb-4 rounded-lg border px-4 py-2 text-sm', msg.startsWith('✅') ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400' : 'border-red-500/30 bg-red-500/10 text-red-400')}>
+          {msg}
+        </div>
+      )}
 
       {tab === 'submit' && (
         <div className="rounded-xl border border-border/50 bg-card/50 p-6">
@@ -85,7 +138,6 @@ export default function AdminMatchesPage() {
             </div>
           </div>
           <button onClick={submitMatch} className="mt-4 rounded-lg bg-amber-500 px-5 py-2 text-sm font-bold text-black hover:bg-amber-400 transition-all">Submit Match</button>
-          {msg && <p className="mt-3 text-sm">{msg}</p>}
         </div>
       )}
 
@@ -131,6 +183,111 @@ export default function AdminMatchesPage() {
             </tbody>
           </table>
           <button onClick={fetchMatches} className="mt-4 text-xs text-amber-400 hover:text-amber-300 transition-colors">↻ Refresh</button>
+        </div>
+      )}
+
+      {tab === 'remove' && (
+        <div className="grid gap-6 lg:grid-cols-2">
+          {/* Remove by player */}
+          <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-6">
+            <h2 className="font-bold text-lg mb-4 text-red-400">Remove Matches by Player</h2>
+            <p className="text-xs text-foreground/50 mb-4">Find a player and remove all their match history. Player stats (points, tiers) will not be affected.</p>
+
+            <input
+              value={removeSearch}
+              onChange={e => searchPlayers(e.target.value)}
+              placeholder="Search player..."
+              className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm focus:outline-none focus:border-red-500/50 mb-3"
+            />
+            {removeResults.length > 0 && (
+              <div className="mb-3 rounded-lg border border-border/50 bg-card max-h-32 overflow-y-auto">
+                {removeResults.map((p: any) => (
+                  <button
+                    key={p.id}
+                    onClick={() => { setSelectedPlayer(p); setRemoveResults([]); setRemoveSearch(p.username) }}
+                    className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent transition-colors"
+                  >
+                    {p.username} {p.region ? `(${p.region})` : ''}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {selectedPlayer && (
+              <div className="mb-3 rounded-lg bg-red-500/10 border border-red-500/30 px-3 py-2 text-sm text-red-400 flex items-center justify-between">
+                <span>Remove all matches for <strong>{selectedPlayer.username}</strong>?</span>
+                <button onClick={() => { setSelectedPlayer(null); setRemoveSearch('') }} className="text-xs text-foreground/50 hover:text-foreground">Cancel</button>
+              </div>
+            )}
+
+            <button
+              onClick={removePlayerMatches}
+              disabled={!selectedPlayer || removing}
+              className="w-full rounded-lg bg-red-500/20 border border-red-500/30 px-4 py-2.5 text-sm font-bold text-red-400 hover:bg-red-500/30 transition-all disabled:opacity-40"
+            >
+              {removing ? 'Removing...' : selectedPlayer ? `Remove ${selectedPlayer.username}'s Matches` : 'Select a player first'}
+            </button>
+          </div>
+
+          {/* Remove ALL matches */}
+          <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-6">
+            <h2 className="font-bold text-lg mb-4 text-red-400">Remove ALL Matches</h2>
+            <p className="text-xs text-foreground/50 mb-4">This will permanently delete every match in the database. Player points and tier data will be preserved.</p>
+
+            {confirmAll === 'none' && (
+              <button
+                onClick={() => setConfirmAll('first')}
+                className="w-full rounded-lg bg-red-500 px-4 py-3 text-sm font-bold text-white hover:bg-red-400 transition-all"
+              >
+                Clear All Matches
+              </button>
+            )}
+
+            {confirmAll === 'first' && (
+              <div className="space-y-3">
+                <div className="rounded-lg bg-red-500/20 border border-red-500/40 px-4 py-3">
+                  <p className="text-sm text-red-400 font-medium">Are you sure? This will delete ALL matches. This cannot be undone.</p>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setConfirmAll('second')}
+                    className="flex-1 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-red-400 transition-all"
+                  >
+                    Yes, Delete All
+                  </button>
+                  <button
+                    onClick={() => setConfirmAll('none')}
+                    className="rounded-lg border border-border/50 px-4 py-2.5 text-sm font-bold text-foreground/70 hover:text-foreground transition-all"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {confirmAll === 'second' && (
+              <div className="space-y-3">
+                <div className="rounded-lg bg-red-500/30 border border-red-500/50 px-4 py-3">
+                  <p className="text-sm text-red-300 font-bold">⚠️ FINAL WARNING: This will permanently remove ALL matches!</p>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={removeAllMatches}
+                    disabled={removing}
+                    className="flex-1 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-red-500 transition-all disabled:opacity-50"
+                  >
+                    {removing ? 'Deleting...' : 'I Understand, Delete Everything'}
+                  </button>
+                  <button
+                    onClick={() => setConfirmAll('none')}
+                    className="rounded-lg border border-border/50 px-4 py-2.5 text-sm font-bold text-foreground/70 hover:text-foreground transition-all"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

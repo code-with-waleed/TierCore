@@ -1,17 +1,15 @@
 import type { NextConfig } from 'next'
-import path from 'path'
 
 const nextConfig: NextConfig = {
-  outputFileTracingRoot: path.join(__dirname),
   images: {
-    domains: ['cdn.discordapp.com'],
+    remotePatterns: [
+      { protocol: 'https', hostname: 'cdn.discordapp.com' },
+      { protocol: 'https', hostname: 'mc-heads.net' },
+    ],
     formats: ['image/avif', 'image/webp'],
-    deviceSizes: [64, 128, 256],
-  },
-  experimental: {
-    serverActions: {
-      bodySizeLimit: '2mb',
-    },
+    deviceSizes: [64, 128, 256, 384, 640],
+    imageSizes: [16, 32, 48, 64, 96, 128],
+    minimumCacheTTL: 3600,
   },
   compress: true,
   poweredByHeader: false,

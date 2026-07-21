@@ -92,6 +92,24 @@ export default function TournamentContent({ tab }: { tab: 'winners' | 'approved'
                 <span className="font-black text-amber-700">{prize3 || 'TBD'}</span>
               </div>
             </div>
+
+            {/* Recent Winners Panel */}
+            {tab === 'winners' && winners.length > 0 && (
+              <div className="mt-5 pt-5 border-t border-border/50">
+                <h3 className="text-xs font-bold uppercase tracking-widest text-purple-400/70 mb-3 text-center">Recent Winners</h3>
+                <div className="space-y-2">
+                  {winners.slice(0, 5).map((e: any, i: number) => (
+                    <div key={e.id} className="flex items-center justify-between rounded-lg bg-purple-500/5 border border-purple-500/20 px-3 py-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="text-xs shrink-0">{['🥇','🥈','🥉','🏅','🏅'][i] || '🏅'}</span>
+                        <span className="text-xs font-medium truncate">{e.username}</span>
+                      </div>
+                      <span className="text-[10px] font-bold text-purple-400 shrink-0 ml-2">{e.points ?? 0} pts</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

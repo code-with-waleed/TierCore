@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, type ReactNode } from 'react'
+import { useRef, useState, useEffect, memo, type ReactNode } from 'react'
 
 interface MagneticButtonProps {
   children: ReactNode
@@ -13,7 +13,7 @@ interface MagneticButtonProps {
   type?: 'button' | 'submit' | 'reset'
 }
 
-export default function MagneticButton({
+function MagneticButtonInner({
   children,
   className = '',
   as = 'button',
@@ -26,9 +26,14 @@ export default function MagneticButton({
   const ref = useRef<HTMLDivElement>(null)
   const [pos, setPos] = useState({ x: 0, y: 0 })
   const [hover, setHover] = useState(false)
+  const isTouch = useRef(false)
+
+  useEffect(() => {
+    isTouch.current = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+  }, [])
 
   function handleMove(e: React.MouseEvent) {
-    if (!ref.current || disabled) return
+    if (!ref.current || disabled || isTouch.current) return
     const r = ref.current.getBoundingClientRect()
     const cx = r.left + r.width / 2
     const cy = r.top + r.height / 2
@@ -43,11 +48,9 @@ export default function MagneticButton({
     setHover(false)
   }
 
-  const style = {
-    transform: hover ? `translate(${pos.x}px, ${pos.y}px)` : 'translate(0px, 0px)',
-    transition: hover ? 'transform 0.12s ease-out' : 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
-    willChange: 'transform',
-  }
+  const style = hover && !isTouch.current
+    ? { transform: `translate(${pos.x}px, ${pos.y}px)`, transition: 'transform 0.12s ease-out', willChange: 'transform' as const }
+    : { transform: 'translate(0px, 0px)', transition: 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)', willChange: 'transform' as const }
 
   const child = (
     <div
@@ -56,7 +59,7 @@ export default function MagneticButton({
       style={style}
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
-      onMouseEnter={() => setHover(true)}
+      onMouseEnter={() => !isTouch.current && setHover(true)}
     >
       {children}
     </div>
@@ -74,3 +77,5 @@ export default function MagneticButton({
     </button>
   )
 }
+
+export default memo(MagneticButtonInner)

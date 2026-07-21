@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-const TIER_POINTS = {
+const TIER_POINTS: Record<string, number> = {
   lt5: 1, ht5: 2, lt4: 3, ht4: 4, lt3: 6,
   ht3: 10, lt2: 20, ht2: 30, lt1: 45, ht1: 60,
   rlt3: 6, rht3: 10, rlt2: 20, rht2: 30, rlt1: 45, rht1: 60,
@@ -25,6 +25,15 @@ const tiersData = [
   { key: 'rht2', name: 'RHT2', shortName: 'RHT2', displayOrder: 14, minPoints: 30, maxPoints: 30, color: '#A2D6FF', category: 'HT' },
   { key: 'rlt1', name: 'RLT1', shortName: 'RLT1', displayOrder: 15, minPoints: 45, maxPoints: 45, color: '#A2D6FF', category: 'LT' },
   { key: 'rht1', name: 'RHT1', shortName: 'RHT1', displayOrder: 16, minPoints: 60, maxPoints: 60, color: '#A2D6FF', category: 'HT' },
+]
+
+const modes = ['sword', 'axe', 'bow', 'rod', 'sumo', 'parkour']
+
+const playerNames = [
+  'xDream', 'TechnoKing', 'PvPMaster', 'BuildFight', 'ComboLord',
+  'CritGod', 'PotPvPer', 'SwordSaint', 'AxeWarrior', 'BowLegend',
+  'RodKing', 'SumoBeast', 'ParkourPro', 'SkyWarsGod', 'KitMaster',
+  'RankedKing', 'NoDebuff', 'GappleGod', 'PearlClutch', 'FinalKill',
 ]
 
 async function main() {
@@ -66,6 +75,76 @@ async function main() {
   })
 
   console.log('[Seed] Settings created')
+
+  const existingPlayers = await prisma.player.count()
+  if (existingPlayers === 0) {
+    const tierValues = Object.values(TIER_POINTS).filter((v, i, a) => a.indexOf(v) === i).sort((a, b) => a - b)
+    const tierKeys = tiersData.map(t => t.key)
+    for (let i = 0; i < playerNames.length; i++) {
+      const modeStatsData = modes.map(mode => {
+        const modePoints = tierValues[Math.floor(Math.random() * tierValues.length)]
+        const modeTierKey = tierKeys.find(k => TIER_POINTS[k] === modePoints) || 'lt5'
+        return {
+          mode,
+          points: modePoints,
+          peakPoints: modePoints + tierValues[Math.floor(Math.random() * tierValues.length)],
+          wins: Math.floor(Math.random() * 50),
+          losses: Math.floor(Math.random() * 40),
+          draws: Math.floor(Math.random() * 5),
+          totalMatches: Math.floor(Math.random() * 100),
+          tierKey: modeTierKey,
+        }
+      })
+
+      const totalPoints = modeStatsData.reduce((sum, m) => sum + m.points, 0)
+      const tierKey = [...tierKeys].sort((a, b) => TIER_POINTS[b] - TIER_POINTS[a]).find(k => totalPoints >= TIER_POINTS[k]) || 'lt5'
+      const wins = Math.floor(Math.random() * 100)
+      const losses = Math.floor(Math.random() * 80)
+      const draws = Math.floor(Math.random() * 10)
+      const totalMatches = wins + losses + draws
+      const winRate = totalMatches > 0 ? (wins / totalMatches) * 100 : 0
+
+      const player = await prisma.player.create({
+        data: {
+          username: playerNames[i],
+          points: totalPoints,
+          peakPoints: totalPoints + Math.floor(Math.random() * 20),
+          earnings: Math.floor(Math.random() * 1000),
+          wins,
+          losses,
+          draws,
+          totalMatches,
+          winRate,
+          kdr: losses > 0 ? Math.round((wins / losses) * 10) / 10 : wins,
+          rank: i + 1,
+          region: ['NA', 'EU', 'AS', 'AU'][Math.floor(Math.random() * 4)],
+          currentTierId: (await prisma.tier.findUnique({ where: { key: tierKey } }))!.id,
+          currentDivision: Math.floor(Math.random() * 4) + 1,
+        },
+      })
+
+      for (const ms of modeStatsData) {
+        await prisma.playerModeStats.create({
+          data: {
+            playerId: player.id,
+            mode: ms.mode,
+            points: ms.points,
+            peakPoints: ms.peakPoints,
+            wins: ms.wins,
+            losses: ms.losses,
+            draws: ms.draws,
+            totalMatches: ms.totalMatches,
+            currentTierId: (await prisma.tier.findUnique({ where: { key: ms.tierKey } }))!.id,
+            rank: Math.floor(Math.random() * 100) + 1,
+          },
+        })
+      }
+    }
+    console.log(`[Seed] ${playerNames.length} players created with mode stats`)
+  } else {
+    console.log(`[Seed] ${existingPlayers} players already exist, skipping`)
+  }
+
   console.log('[Seed] Seed completed successfully')
 }
 

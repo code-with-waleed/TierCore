@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { GAME_MODES } from '@/lib/game-modes'
 import { getCombatRankFromPoints, TIER_ORDER } from '@/lib/points'
 import { RANK_EMBLEMS } from '@/lib/rank-emblems'
 import type { LeaderboardEntry, ModeStatInfo } from '@/types'
@@ -14,17 +15,9 @@ const REGION_COLORS: Record<string, string> = {
 }
 
 const GAME_MODE_KEYS = ['sword', 'axe', 'pot', 'nethpot', 'uhc', 'mace', 'smp', 'vanilla'] as const
-
-const MODE_IMAGES: Record<string, string> = {
-  sword: '/images/sword.svg',
-  axe: '/images/axe.svg',
-  pot: '/images/pot.svg',
-  nethpot: '/images/nethop.svg',
-  uhc: '/images/uhc.svg',
-  mace: '/images/mace.svg',
-  smp: '/images/smp.svg',
-  vanilla: '/images/vanilla.svg',
-}
+const MODE_IMAGES: Record<string, string> = Object.fromEntries(
+  GAME_MODES.filter(m => m.id !== 'overall').map(m => [m.id, m.icon])
+)
 
 function Avatar({ src, username }: { src: string; username: string }) {
   const [imgSrc, setImgSrc] = useState(src)
@@ -78,7 +71,7 @@ function GameModeRow({ modeStats, mode }: { modeStats: ModeStatInfo[]; mode?: st
               <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-[#0a0806] border-r border-b border-border/60 rotate-45 -mt-1" />
             </div>
             <div
-              className={`w-8 h-8 sm:w-10 sm:h-10 tier-icon-circle ${!hasTier ? 'opacity-30 grayscale' : ''}`}
+              className={`w-9 h-9 sm:w-16 sm:h-16 tier-icon-circle ${!hasTier ? 'opacity-30 grayscale' : ''}`}
               style={{
                 backgroundColor: hasTier ? `${stat!.tierColor!}15` : 'transparent',
                 color: hasTier ? stat!.tierColor! : '#ffffff40',
@@ -89,7 +82,7 @@ function GameModeRow({ modeStats, mode }: { modeStats: ModeStatInfo[]; mode?: st
               <img
                 src={MODE_IMAGES[key]}
                 alt={key}
-                className="w-5 h-5 sm:w-7 sm:h-7 object-contain"
+                className="w-3.5 h-3.5 sm:w-7 sm:h-7 object-contain"
               />
             </div>
             <span
@@ -236,7 +229,7 @@ export default function LeaderboardPage() {
                     {/* Region Badge inline on mobile */}
                     <div className="flex sm:hidden items-center gap-2 mt-1">
                       <div
-                        className="px-2 py-0.5 rounded text-[9px] font-bold tracking-wide uppercase"
+                        className="px-2 py-0.5 rounded text-[10px] font-bold tracking-wide uppercase"
                         style={{
                           backgroundColor: `${regionColor}18`,
                           color: regionColor,
@@ -266,7 +259,7 @@ export default function LeaderboardPage() {
                   {/* Region Badge desktop */}
                   <div className="hidden sm:flex flex-shrink-0">
                     <div
-                      className="px-2.5 py-1 rounded-md text-[11px] font-bold tracking-wide uppercase"
+                      className="px-2.5 py-1 rounded-md text-xs font-bold tracking-wide uppercase"
                       style={{
                         backgroundColor: `${regionColor}18`,
                         color: regionColor,

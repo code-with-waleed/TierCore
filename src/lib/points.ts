@@ -80,12 +80,24 @@ export interface CombatRank {
 
 export const COMBAT_RANKS: CombatRank[] = [
   { key: 'bronze', name: 'Bronze', minPoints: 1, maxPoints: 5, color: '#CD7F32' },
-  { key: 'silver', name: 'Silver', minPoints: 6, maxPoints: 20, color: '#C0C0C0' },
-  { key: 'gold', name: 'Gold', minPoints: 21, maxPoints: 50, color: '#FFD700' },
-  { key: 'platinum', name: 'Platinum', minPoints: 51, maxPoints: 100, color: '#A8D8EA' },
-  { key: 'diamond', name: 'Diamond', minPoints: 101, maxPoints: 180, color: '#66D9FF' },
-  { key: 'master', name: 'Master', minPoints: 181, maxPoints: 300, color: '#B388FF' },
-  { key: 'apex', name: 'Apex', minPoints: 301, maxPoints: 480, color: '#FF6B35' },
+  { key: 'silver', name: 'Silver', minPoints: 6, maxPoints: 10, color: '#C0C0C0' },
+  { key: 'gold', name: 'Gold', minPoints: 11, maxPoints: 20, color: '#FFD700' },
+  { key: 'platinum', name: 'Platinum', minPoints: 21, maxPoints: 35, color: '#A8D8EA' },
+  { key: 'diamond', name: 'Diamond', minPoints: 36, maxPoints: 65, color: '#66D9FF' },
+  { key: 'master', name: 'Master', minPoints: 66, maxPoints: 95, color: '#B388FF' },
+  { key: 'apex', name: 'Apex', minPoints: 96, maxPoints: 125, color: '#FF6B35' },
+  { key: 'elite', name: 'Elite', minPoints: 126, maxPoints: 155, color: '#FF4757' },
+  { key: 'legend', name: 'Legend', minPoints: 156, maxPoints: 185, color: '#FFA502' },
+  { key: 'mythic', name: 'Mythic', minPoints: 186, maxPoints: 215, color: '#A855F7' },
+  { key: 'divine', name: 'Divine', minPoints: 216, maxPoints: 245, color: '#38BDF8' },
+  { key: 'celestial', name: 'Celestial', minPoints: 246, maxPoints: 275, color: '#F472B6' },
+  { key: 'transcendent', name: 'Transcendent', minPoints: 276, maxPoints: 305, color: '#34D399' },
+  { key: 'eternal', name: 'Eternal', minPoints: 306, maxPoints: 335, color: '#FB923C' },
+  { key: 'immortal', name: 'Immortal', minPoints: 336, maxPoints: 365, color: '#C084FC' },
+  { key: 'cosmic', name: 'Cosmic', minPoints: 366, maxPoints: 395, color: '#2DD4BF' },
+  { key: 'omega', name: 'Omega', minPoints: 396, maxPoints: 425, color: '#F87171' },
+  { key: 'infinity', name: 'Infinity', minPoints: 426, maxPoints: 455, color: '#E879F9' },
+  { key: 'godlike', name: 'Godlike', minPoints: 456, maxPoints: 480, color: '#FBBF24' },
 ]
 
 export function getCombatRankFromPoints(points: number): CombatRank {

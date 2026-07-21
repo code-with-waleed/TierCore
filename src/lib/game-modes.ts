@@ -10,7 +10,7 @@ export const GAME_MODES: GameModeConfig[] = [
   { id: 'sword', name: 'Sword', icon: '/images/sword.svg', desc: 'Classic sword PvP' },
   { id: 'axe', name: 'Axe', icon: '/images/axe.svg', desc: 'Axe-based combat' },
   { id: 'pot', name: 'Pot', icon: '/images/pot.svg', desc: 'Pot PvP' },
-  { id: 'nethpot', name: 'NethPot', icon: '/images/nethop.svg', desc: 'Netherite potion PvP' },
+  { id: 'nethpot', name: 'NethOP', icon: '/images/nethop.svg', desc: 'Netherite potion PvP' },
   { id: 'uhc', name: 'UHC', icon: '/images/uhc.svg', desc: 'Ultra Hardcore mode' },
   { id: 'mace', name: 'Mace', icon: '/images/mace.svg', desc: 'Mace PvP' },
   { id: 'smp', name: 'SMP', icon: '/images/smp.svg', desc: 'Survival Multiplayer' },

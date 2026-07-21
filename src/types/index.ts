@@ -16,6 +16,11 @@ export interface TierConfig {
 export interface ModeStatInfo {
   mode: string
   points: number
+  peakPoints: number
+  wins: number
+  losses: number
+  draws: number
+  totalMatches: number
   tier: string | null
   tierKey: string | null
   tierColor: string | null

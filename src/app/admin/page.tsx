@@ -3,9 +3,14 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { fetchWithTimeout } from '@/lib/utils'
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({ players: 0, matches: 0, pending: 0 })
+  const [statsLoaded, setStatsLoaded] = useState(false)
+  const [clearing, setClearing] = useState(false)
+  const [clearMsg, setClearMsg] = useState('')
+  const [confirmClear, setConfirmClear] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -15,8 +20,8 @@ export default function AdminDashboard() {
   async function fetchStats() {
     try {
       const [pRes, mRes] = await Promise.all([
-        fetch('/api/players'),
-        fetch('/api/matches'),
+        fetchWithTimeout('/api/players'),
+        fetchWithTimeout('/api/matches'),
       ])
       const pData = await pRes.json()
       const mData = await mRes.json()
@@ -25,7 +30,7 @@ export default function AdminDashboard() {
         matches: mData.data?.length ?? 0,
         pending: mData.data?.filter((m: any) => m.status === 'PENDING').length ?? 0,
       })
-    } catch {}
+    } catch {} finally { setStatsLoaded(true) }
   }
 
   async function handleLogout() {
@@ -33,12 +38,31 @@ export default function AdminDashboard() {
     router.push('/admin/login')
   }
 
+  async function clearAllData() {
+    setClearing(true)
+    setClearMsg('')
+    try {
+      const r = await fetch('/api/admin/clear-data', { method: 'POST' })
+      if (r.ok) {
+        setClearMsg('All matches and game data cleared!')
+        setConfirmClear(false)
+        fetchStats()
+      } else {
+        const d = await r.json()
+        setClearMsg(`Error: ${d.error}`)
+      }
+    } catch {
+      setClearMsg('Failed to clear data')
+    }
+    setClearing(false)
+  }
+
   const links = [
     { href: '/admin/players', label: 'Players', desc: 'Add, edit, delete players', icon: '👤', color: 'from-blue-500 to-cyan-500' },
-    { href: '/admin/tournament-setup', label: 'Tournament Setup', desc: 'Manage tournament roster, applications, and dates', icon: '🏆', color: 'from-amber-500 to-orange-500' },
-    { href: '/admin/applicants', label: 'Applicants', desc: 'View applicants with IP and tier', icon: '📋', color: 'from-emerald-500 to-teal-500' },
+    { href: '/admin/match-players', label: 'Match Players', desc: 'Manage match roster and earnings', icon: '🎯', color: 'from-emerald-500 to-teal-500' },
     { href: '/admin/matches', label: 'Matches', desc: 'Submit, approve, reject matches', icon: '⚔️', color: 'from-red-500 to-orange-500' },
-    { href: '/admin/tiers', label: 'Rankings', desc: 'Tier config, point values', icon: '📊', color: 'from-yellow-500 to-amber-500' },
+    { href: '/admin/tournament-setup', label: 'Tournament Setup', desc: 'Manage tournament roster, applications, and dates', icon: '🏆', color: 'from-amber-500 to-orange-500' },
+    { href: '/admin/tiers', label: 'Tiers', desc: 'Tier config, point values', icon: '📊', color: 'from-yellow-500 to-amber-500' },
     { href: '/admin/settings', label: 'Settings', desc: 'Game modes, site info', icon: '⚙️', color: 'from-gray-500 to-slate-500' },
   ]
 
@@ -56,6 +80,42 @@ export default function AdminDashboard() {
         <div className="rounded-xl border border-border/50 bg-card/50 p-5"><div className="text-sm text-foreground/70">Total Players</div><div className="text-2xl font-black mt-1">{stats.players}</div></div>
         <div className="rounded-xl border border-border/50 bg-card/50 p-5"><div className="text-sm text-foreground/70">Total Matches</div><div className="text-2xl font-black mt-1">{stats.matches}</div></div>
         <div className="rounded-xl border border-border/50 bg-card/50 p-5"><div className="text-sm text-foreground/70">Pending Approval</div><div className="text-2xl font-black text-yellow-400 mt-1">{stats.pending}</div></div>
+      </div>
+
+      {/* Clear data section */}
+      <div className="mb-8 rounded-xl border border-red-500/20 bg-red-500/5 p-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-sm font-bold text-red-400">Danger Zone</h3>
+            <p className="text-xs text-foreground/50 mt-0.5">Clear all matches and game mode statistics</p>
+          </div>
+          {!confirmClear ? (
+            <button
+              onClick={() => setConfirmClear(true)}
+              className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-xs font-bold text-red-400 hover:bg-red-500/20 transition-all"
+            >
+              Clear All Data
+            </button>
+          ) : (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-red-400 font-medium">Are you sure?</span>
+              <button
+                onClick={clearAllData}
+                disabled={clearing}
+                className="rounded-lg bg-red-500 px-4 py-2 text-xs font-bold text-white hover:bg-red-400 transition-all disabled:opacity-50"
+              >
+                {clearing ? 'Clearing...' : 'Yes, Clear'}
+              </button>
+              <button
+                onClick={() => setConfirmClear(false)}
+                className="rounded-lg border border-border/50 px-4 py-2 text-xs font-bold text-foreground/70 hover:text-foreground transition-all"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+        </div>
+        {clearMsg && <p className="mt-2 text-xs text-emerald-400">{clearMsg}</p>}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

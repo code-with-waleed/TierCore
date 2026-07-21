@@ -77,3 +77,11 @@ export function parseError(error: unknown): string {
   if (typeof error === 'string') return error
   return 'An unknown error occurred'
 }
+
+export function fetchWithTimeout(url: string, options: RequestInit & { timeout?: number } = {}) {
+  const { timeout = 10000, ...fetchOptions } = options
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), timeout)
+  return fetch(url, { ...fetchOptions, signal: controller.signal })
+    .finally(() => clearTimeout(timeoutId))
+}

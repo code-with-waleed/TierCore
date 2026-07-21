@@ -1,13 +1,9 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import './globals.css'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { Providers } from '@/components/layout/Providers'
 import { OpeningAnimation } from '@/components/layout/OpeningAnimation'
-import { cn } from '@/lib/utils'
-
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
@@ -18,8 +14,8 @@ export const metadata: Metadata = {
   description: 'Competitive Minecraft PvP ranking platform. Climb the tiers, prove your skill.',
   keywords: ['minecraft', 'pvp', 'rankings', 'tier list', 'competitive', 'mc pvp'],
   icons: {
-    icon: '/favicon.svg',
-    shortcut: '/favicon.svg',
+    icon: '/favicon.png',
+    shortcut: '/favicon.png',
   },
   openGraph: {
     title: 'TierCore - Minecraft PvP Rankings',
@@ -34,6 +30,10 @@ export const metadata: Metadata = {
     description: 'Competitive Minecraft PvP ranking platform.',
     images: ['/images/tiercore.png'],
   },
+  other: {
+    'msapplication-TileColor': '#05050a',
+    'theme-color': '#05050a',
+  },
 }
 
 export default function RootLayout({
@@ -43,7 +43,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn(inter.variable, 'font-sans antialiased min-h-screen bg-background')}>
+      <body className="antialiased min-h-screen bg-background">
         <Providers>
           <OpeningAnimation>
             <div className="relative flex min-h-screen flex-col">

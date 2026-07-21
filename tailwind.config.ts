@@ -10,6 +10,13 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Trap-Regular', 'sans-serif'],
+        'trap-bold': ['Trap-Bold', 'sans-serif'],
+        'trap-regular': ['Trap-Regular', 'sans-serif'],
+        'technor': ['Technor', 'sans-serif'],
+        'dm-sans': ['DM Sans', 'sans-serif'],
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
