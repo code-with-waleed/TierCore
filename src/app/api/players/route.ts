@@ -46,8 +46,8 @@ export async function GET(req: NextRequest) {
         modeStats: includeStats ? (p.modeStats as any[]).map(ms => ({
           mode: ms.mode,
           points: ms.points,
-          tier: ms.tier?.shortName ?? 'Unranked',
-          tierColor: ms.tier?.color ?? '#777777',
+          tier: ms.tier?.shortName ?? null,
+          tierColor: ms.tier?.color ?? null,
         })) : undefined,
       })),
     })
