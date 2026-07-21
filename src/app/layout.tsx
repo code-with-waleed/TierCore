@@ -14,8 +14,8 @@ export const metadata: Metadata = {
   description: 'Competitive Minecraft PvP ranking platform. Climb the tiers, prove your skill.',
   keywords: ['minecraft', 'pvp', 'rankings', 'tier list', 'competitive', 'mc pvp'],
   icons: {
-    icon: '/favicon.png',
-    shortcut: '/favicon.png',
+    icon: '/images/tiercore-logo.svg',
+    shortcut: '/images/tiercore-logo.svg',
   },
   openGraph: {
     title: 'TierCore - Minecraft PvP Rankings',
