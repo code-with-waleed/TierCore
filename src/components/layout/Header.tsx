@@ -183,7 +183,7 @@ export function Header() {
             }} />
             <div className="w-[200px]">
               <Link href="/" className="flex items-center">
-                <img src="/images/tiercore-logo.svg" alt="TierCore" className="h-9 w-auto" />
+                <img src="/images/logo.png" alt="TierCore" className="h-9 w-auto" />
               </Link>
             </div>
 
@@ -237,7 +237,7 @@ export function Header() {
             background: 'linear-gradient(90deg, transparent, rgba(180,185,195,0.25) 15%, rgba(180,185,195,0.12) 50%, rgba(180,185,195,0.25) 85%, transparent)',
           }} />
           <Link href="/" className="flex items-center gap-2.5 group">
-            <img src="/images/tiercore-logo.svg" alt="TierCore" className="h-8 w-auto" />
+            <img src="/images/logo.png" alt="TierCore" className="h-8 w-auto" />
           </Link>
 
           <div className="flex items-center gap-1.5">

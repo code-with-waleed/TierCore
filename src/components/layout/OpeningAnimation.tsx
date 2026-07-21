@@ -58,7 +58,7 @@ export function OpeningAnimation({ children }: { children: React.ReactNode }) {
             {/* Logo */}
             <div className="opening-logo-wrap">
               <div className="opening-logo-glow" />
-              <img src="/images/tiercore-logo.svg" alt="TierCore" className="opening-logo" />
+              <img src="/images/logo.png" alt="TierCore" className="opening-logo" />
             </div>
 
             {/* Line */}
