@@ -13,8 +13,8 @@ export default function AdminDashboard() {
   const router = useRouter()
   const { mutate } = useSWRConfig()
 
-  const { data: pData, isLoading: pLoading } = useSWR('/api/players', swrFetcher, { revalidateOnFocus: false, dedupingInterval: 5000 })
-  const { data: mData, isLoading: mLoading } = useSWR('/api/matches', swrFetcher, { revalidateOnFocus: false, dedupingInterval: 5000 })
+  const { data: pData, isLoading: pLoading } = useSWR('/api/players', swrFetcher, { refreshInterval: 10000, revalidateOnFocus: true })
+  const { data: mData, isLoading: mLoading } = useSWR('/api/matches', swrFetcher, { refreshInterval: 10000, revalidateOnFocus: true })
   const stats = {
     players: pData?.data?.length ?? 0,
     matches: mData?.data?.length ?? 0,

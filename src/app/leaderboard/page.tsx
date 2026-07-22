@@ -135,7 +135,7 @@ export default function LeaderboardPage() {
   const { data, isLoading: loading } = useSWR<{ data: LeaderboardEntry[] }>(
     `/api/leaderboard?${params}`,
     swrFetcher,
-    { revalidateOnFocus: false, dedupingInterval: 5000 }
+    { refreshInterval: 15000, revalidateOnFocus: true }
   )
   const entries: LeaderboardEntry[] = data?.data ?? []
 

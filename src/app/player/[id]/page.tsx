@@ -27,7 +27,7 @@ export default function PlayerPage({ params }: { params: Promise<{ id: string }>
   const { data: player, error } = useSWR(
     resolvedId ? `/api/players/${resolvedId}` : null,
     swrFetcher,
-    { revalidateOnFocus: false, dedupingInterval: 5000 }
+    { refreshInterval: 15000, revalidateOnFocus: true }
   )
 
   const loading = !player && !error

@@ -510,7 +510,7 @@ export default function RankingModePage() {
   const { data: leaderboardData, isLoading: loading } = useSWR(
     `/api/leaderboard?${apiParams}`,
     swrFetcher,
-    { revalidateOnFocus: false, dedupingInterval: 5000 }
+    { refreshInterval: 15000, revalidateOnFocus: true }
   )
   const entries = leaderboardData?.data ?? []
 
