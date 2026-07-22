@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     }
 
     const existing = await prisma.tournamentEntry.findFirst({
-      where: { discordId: discordId ?? undefined, username },
+      where: { discordId: discordId ?? undefined, username: { equals: username, mode: 'insensitive' } },
     })
     if (existing) {
       return NextResponse.json({ error: 'Entry already exists' }, { status: 409 })

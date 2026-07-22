@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
       where.isActive = true
       where.isBanned = false
     }
-    if (search) where.username = { contains: search }
+    if (search) where.username = { contains: search, mode: 'insensitive' }
     if (matchPlayers) where.isMatchPlayer = true
 
     const players = await prisma.player.findMany({
@@ -71,6 +71,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid Minecraft username. Use only letters, numbers, and underscores.' }, { status: 400 })
     }
 
+    const normalizedUsername = username.trim()
+
+    const existing = await prisma.player.findFirst({
+      where: { username: { equals: normalizedUsername, mode: 'insensitive' } },
+      include: { modeStats: true },
+    })
+    if (existing) {
+      return NextResponse.json({ error: 'This player already exists.' }, { status: 409 })
+    }
+
     const modeToUse = mode ?? 'overall'
     const pts = points ?? 1
     let tierKeyToUse = tierKey
@@ -79,49 +89,6 @@ export async function POST(req: NextRequest) {
       if (computed) tierKeyToUse = computed.key
     }
     const tier = tierKeyToUse ? await prisma.tier.findUnique({ where: { key: tierKeyToUse } }) : null
-
-    const existing = await prisma.player.findUnique({
-      where: { username },
-      include: { modeStats: true },
-    })
-    if (existing) {
-      const alreadyInMode = existing.modeStats.some(ms => ms.mode === modeToUse)
-      if (alreadyInMode) {
-        const modeName = modeToUse.charAt(0).toUpperCase() + modeToUse.slice(1)
-        return NextResponse.json({ error: `${username} already exists in ${modeName}` }, { status: 409 })
-      }
-
-      const updated = await prisma.player.update({
-        where: { id: existing.id },
-        data: {
-          modeStats: {
-            create: {
-              mode: modeToUse === 'overall' ? 'overall' : modeToUse,
-              points: pts,
-              peakPoints: pts,
-              currentTierId: tier?.id ?? null,
-            },
-          },
-        },
-        include: { currentTier: true, modeStats: true },
-      })
-
-      const totalPoints = existing.modeStats.reduce((sum, ms) => sum + ms.points, 0) + pts
-      const computedTier = getTierFromPoints(totalPoints, DEFAULT_TIERS)
-      const overallTier = computedTier ? (await prisma.tier.findUnique({ where: { key: computedTier.key } }))?.id ?? null : null
-
-      await prisma.player.update({
-        where: { id: existing.id },
-        data: {
-          points: totalPoints,
-          currentTierId: overallTier,
-        },
-      })
-
-      return NextResponse.json({
-        data: { ...updated, points: totalPoints, currentTierId: overallTier },
-      }, { status: 201 })
-    }
 
     const player = await prisma.player.create({
       data: {

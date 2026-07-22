@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
     const sort = searchParams.get('sort') ?? 'points'
 
     const baseWhere: any = { isActive: true, isBanned: false }
-    if (search) baseWhere.username = { contains: search }
+    if (search) baseWhere.username = { contains: search, mode: 'insensitive' }
 
     const playerInclude = {
       currentTier: true,
@@ -104,7 +104,7 @@ export async function GET(req: NextRequest) {
     }
 
     const modeWhere: any = { mode, player: { ...baseWhere } }
-    if (search) modeWhere.player.username = { contains: search }
+    if (search) modeWhere.player.username = { contains: search, mode: 'insensitive' }
 
     const allStats = await prisma.playerModeStats.findMany({
       where: modeWhere,

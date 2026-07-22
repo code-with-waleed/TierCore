@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const existing = await prisma.player.findUnique({ where: { username } })
+    const existing = await prisma.player.findFirst({ where: { username: { equals: username, mode: 'insensitive' } } })
     if (existing) {
       return NextResponse.json({
         error: `"${username}" is already taken.`,
@@ -94,7 +94,7 @@ export async function PATCH(req: NextRequest) {
       if (!/^[a-zA-Z0-9_]{1,16}$/.test(username)) {
         return NextResponse.json({ error: 'Invalid Minecraft username' }, { status: 400 })
       }
-      const existing = await prisma.player.findUnique({ where: { username } })
+      const existing = await prisma.player.findFirst({ where: { username: { equals: username, mode: 'insensitive' } } })
       if (existing && existing.id !== applicant.id) {
         return NextResponse.json({ error: `"${username}" is already taken.` }, { status: 409 })
       }
