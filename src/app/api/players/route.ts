@@ -77,9 +77,6 @@ export async function POST(req: NextRequest) {
       where: { username: { equals: normalizedUsername, mode: 'insensitive' } },
       include: { modeStats: true },
     })
-    if (existing) {
-      return NextResponse.json({ error: 'This player already exists.' }, { status: 409 })
-    }
 
     const modeToUse = mode ?? 'overall'
     const pts = points ?? 1
@@ -89,6 +86,39 @@ export async function POST(req: NextRequest) {
       if (computed) tierKeyToUse = computed.key
     }
     const tier = tierKeyToUse ? await prisma.tier.findUnique({ where: { key: tierKeyToUse } }) : null
+
+    if (existing) {
+      const alreadyInMode = existing.modeStats.some(ms => ms.mode === modeToUse)
+      if (alreadyInMode) {
+        return NextResponse.json({ error: `${existing.username} already exists in ${modeToUse}.` }, { status: 409 })
+      }
+
+      const updated = await prisma.player.update({
+        where: { id: existing.id },
+        data: {
+          modeStats: {
+            create: {
+              mode: modeToUse === 'overall' ? 'overall' : modeToUse,
+              points: pts,
+              peakPoints: pts,
+              currentTierId: tier?.id ?? null,
+            },
+          },
+        },
+        include: { currentTier: true, modeStats: true },
+      })
+
+      const totalPoints = existing.modeStats.reduce((sum, ms) => sum + ms.points, 0) + pts
+      const computedTier = getTierFromPoints(totalPoints, DEFAULT_TIERS)
+      const overallTier = computedTier ? (await prisma.tier.findUnique({ where: { key: computedTier.key } }))?.id ?? null : null
+
+      await prisma.player.update({
+        where: { id: existing.id },
+        data: { points: totalPoints, currentTierId: overallTier },
+      })
+
+      return NextResponse.json({ data: { ...updated, points: totalPoints, currentTierId: overallTier } }, { status: 201 })
+    }
 
     const player = await prisma.player.create({
       data: {
