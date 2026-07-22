@@ -41,6 +41,12 @@ export default function AdminPlayersPage() {
   const [editTier, setEditTier] = useState('')
   const [editRegion, setEditRegion] = useState('NA')
 
+  const [regionSearch, setRegionSearch] = useState('')
+  const [regionResults, setRegionResults] = useState<any[]>([])
+  const [regionPlayerId, setRegionPlayerId] = useState('')
+  const [regionPlayerLabel, setRegionPlayerLabel] = useState('')
+  const [regionValue, setRegionValue] = useState('NA')
+
   async function searchPlayers(query: string, setResults: (r: any[]) => void) {
     if (!query || query.length < 1) { setResults([]); return }
     try {
@@ -102,6 +108,24 @@ export default function AdminPlayersPage() {
       })
       if (r.ok) { setMsg(`Removed from ${removeMode}`); setRemoveResults([]) }
       else { const e = await r.json(); setMsg(`Error: ${e.error}`) }
+    }
+  }
+
+  async function updateRegion() {
+    if (!regionPlayerId) return
+    const r = await fetch(`/api/players/${regionPlayerId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ region: regionValue }),
+    })
+    if (r.ok) {
+      setMsg(`Updated ${regionPlayerLabel} region to ${regionValue}`)
+      setRegionPlayerId('')
+      setRegionPlayerLabel('')
+      setRegionSearch('')
+    } else {
+      const e = await r.json()
+      setMsg(`Error: ${e.error}`)
     }
   }
 
@@ -301,6 +325,59 @@ export default function AdminPlayersPage() {
             </div>
             <button onClick={editPlayer} className={`w-full rounded-lg px-4 py-2 text-sm font-bold transition-all btn-press ${editPlayerId ? 'bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30' : 'bg-blue-500/10 border border-blue-500/20 text-blue-400/50'}`}>
               Update Player
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Region Updater Panel */}
+      <div className="p-6 animate-slide-up anim-delay-4 card-premium mb-8">
+        <h2 className="font-bold text-lg mb-4">Region Updater</h2>
+        <div className="grid gap-4 sm:grid-cols-3 items-end">
+          <div>
+            <label className="block text-xs text-muted-foreground mb-1">Find Player</label>
+            <input
+              value={regionSearch}
+              onChange={e => { setRegionSearch(e.target.value); setRegionPlayerId(''); setRegionPlayerLabel(''); searchPlayers(e.target.value, setRegionResults) }}
+              placeholder="Type username..."
+              className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm focus:outline-none focus:border-amber-500/50"
+            />
+            {regionResults.length > 0 && (
+              <div className="mt-1 rounded-lg border border-border/50 bg-card max-h-32 overflow-y-auto">
+                {regionResults.map((p: any) => (
+                  <button
+                    key={p.id}
+                    onClick={() => { setRegionPlayerId(p.id); setRegionPlayerLabel(p.username); setRegionValue(p.region ?? 'NA'); setRegionResults([]) }}
+                    className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent transition-colors"
+                  >
+                    {p.username} {p.region ? `(${p.region})` : ''}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          <div>
+            <label className="block text-xs text-muted-foreground mb-1">New Region</label>
+            <select value={regionValue} onChange={e => setRegionValue(e.target.value)} className="w-full rounded-lg border border-border/50 bg-card px-3 py-2 text-sm">
+              {REGIONS.map(r => <option key={r} value={r}>{r}</option>)}
+            </select>
+          </div>
+          <div>
+            {regionPlayerLabel && (
+              <div className="rounded-lg bg-emerald-500/10 px-3 py-2 text-sm text-emerald-400 mb-2">
+                Selected: {regionPlayerLabel} → {regionValue}
+              </div>
+            )}
+            <button
+              onClick={updateRegion}
+              disabled={!regionPlayerId}
+              className={`w-full rounded-lg px-4 py-2 text-sm font-bold transition-all btn-press ${
+                regionPlayerId
+                  ? 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30'
+                  : 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400/50'
+              }`}
+            >
+              Update Region
             </button>
           </div>
         </div>
