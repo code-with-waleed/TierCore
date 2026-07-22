@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import useSWR from 'swr'
 import Link from 'next/link'
 import { GAME_MODES } from '@/lib/game-modes'
 import { getCombatRankFromPoints } from '@/lib/points'
 import { RANK_EMBLEMS } from '@/lib/rank-emblems'
-import { formatRelativeTime, cn, fetchWithTimeout } from '@/lib/utils'
+import { formatRelativeTime, cn, swrFetcher } from '@/lib/utils'
 
 const REGION_FLAGS: Record<string, string> = {
   NA: '/images/region-na.svg',
@@ -17,26 +18,21 @@ const REGION_FLAGS: Record<string, string> = {
 const OCT_CLIP = 'polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%)'
 
 export default function PlayerPage({ params }: { params: Promise<{ id: string }> }) {
-  const [player, setPlayer] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+  const [resolvedId, setResolvedId] = useState<string | null>(null)
 
   useEffect(() => {
-    let cancelled = false
-    params.then(({ id }) => {
-      fetchWithTimeout(`/api/players/${id}`)
-        .then(res => res.json())
-        .then(d => {
-          if (!cancelled) {
-            if (d.data) setPlayer(d.data)
-            else setError('Player not found')
-          }
-        })
-        .catch(() => { if (!cancelled) setError('Failed to load player') })
-        .finally(() => { if (!cancelled) setLoading(false) })
-    })
-    return () => { cancelled = true }
+    params.then(({ id }) => setResolvedId(id))
   }, [params])
+
+  const { data: player, error } = useSWR(
+    resolvedId ? `/api/players/${resolvedId}` : null,
+    swrFetcher,
+    { revalidateOnFocus: false, dedupingInterval: 5000 }
+  )
+
+  const loading = !player && !error
+  const playerData = player?.data
+  const errMsg = error ? 'Failed to load player' : !loading && !playerData ? 'Player not found' : ''
 
   if (loading) {
     return (
@@ -60,16 +56,16 @@ export default function PlayerPage({ params }: { params: Promise<{ id: string }>
     )
   }
 
-  if (error) {
+  if (errMsg) {
     return (
       <div className="mx-auto max-w-6xl px-4 py-24 text-center">
         <div className="text-6xl mb-4 opacity-30">!</div>
-        <div className="text-lg text-red-400/80 font-medium">{error}</div>
+        <div className="text-lg text-red-400/80 font-medium">{errMsg}</div>
       </div>
     )
   }
 
-  if (!player) {
+  if (!playerData) {
     return (
       <div className="mx-auto max-w-6xl px-4 py-24 text-center">
         <div className="text-6xl mb-4 opacity-30">?</div>
@@ -85,7 +81,7 @@ export default function PlayerPage({ params }: { params: Promise<{ id: string }>
   let totalWins = 0
   let totalLosses = 0
   let totalDraws = 0
-  for (const ms of player.modeStats ?? []) {
+  for (const ms of playerData.modeStats ?? []) {
     if (!mainModeIds.includes(ms.mode)) continue
     modeStatsMap[ms.mode] = ms
     totalPoints += ms.points ?? 0
@@ -100,9 +96,9 @@ export default function PlayerPage({ params }: { params: Promise<{ id: string }>
   const EmblemComp = RANK_EMBLEMS[combatRank.key]
 
   const displayModes = GAME_MODES.filter(m => m.id !== 'overall')
-  const tierNum = player.currentTier?.key ? parseInt(player.currentTier.key.match(/\d+$/)?.[0] ?? '5') : null
+  const tierNum = playerData.currentTier?.key ? parseInt(playerData.currentTier.key.match(/\d+$/)?.[0] ?? '5') : null
 
-  const flagSrc = player.region ? REGION_FLAGS[player.region] : null
+  const flagSrc = playerData.region ? REGION_FLAGS[playerData.region] : null
 
   const resultColor = (r: string) =>
     r === 'win' ? '#22c55e' : r === 'loss' ? '#ef4444' : '#a1a1aa'
@@ -134,10 +130,10 @@ export default function PlayerPage({ params }: { params: Promise<{ id: string }>
             <div className="w-28 h-28 sm:w-40 sm:h-40 rounded-full overflow-hidden border-2 border-white/10 shadow-2xl shadow-black/60"
               style={{ borderColor: `${combatRank.color}40` }}>
               <img
-                src={`https://render.crafty.gg/3d/bust/${player.username}`}
-                alt={player.username}
+                src={`https://render.crafty.gg/3d/bust/${playerData.username}`}
+                alt={playerData.username}
                 className="w-full h-full object-cover object-bottom scale-110 translate-y-2"
-                onError={(e: any) => { e.target.src = `https://mc-heads.net/avatar/${player.username}/64` }}
+                onError={(e: any) => { e.target.src = `https://mc-heads.net/avatar/${playerData.username}/64` }}
               />
             </div>
             {EmblemComp && (
@@ -150,7 +146,7 @@ export default function PlayerPage({ params }: { params: Promise<{ id: string }>
           {/* Info */}
           <div className="flex-1 text-center sm:text-left min-w-0">
             <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
-              {player.username}
+              {playerData.username}
             </h1>
             <div className="flex items-center justify-center sm:justify-start gap-3 mt-2 sm:mt-3 flex-wrap">
               {/* Rank */}
@@ -172,9 +168,9 @@ export default function PlayerPage({ params }: { params: Promise<{ id: string }>
                     border: '1px solid rgba(255,255,255,0.08)',
                   }}>
                   <div className="w-5 h-5 rounded-full overflow-hidden flex-shrink-0">
-                    <img src={flagSrc} alt={player.region} className="w-full h-full object-cover" />
+                    <img src={flagSrc} alt={playerData.region} className="w-full h-full object-cover" />
                   </div>
-                  <span className="text-[11px] font-bold text-white/70">{player.region}</span>
+                  <span className="text-[11px] font-bold text-white/70">{playerData.region}</span>
                 </div>
               )}
             </div>
@@ -188,7 +184,7 @@ export default function PlayerPage({ params }: { params: Promise<{ id: string }>
           { label: 'Total Points', value: totalPoints.toLocaleString(), color: combatRank.color },
           { label: 'Matches', value: totalMatches.toLocaleString(), color: '#a1a1aa' },
           { label: 'Win Rate', value: totalMatches > 0 ? `${winRate}%` : '—', color: winRate >= 50 ? '#22c55e' : '#ef4444' },
-          { label: 'Best Mode', value: (() => { const b = [...(player.modeStats ?? [])].sort((a: any, b: any) => (b.points ?? 0) - (a.points ?? 0))[0]; return b ? (GAME_MODES.find(m => m.id === b.mode)?.name ?? b.mode) : '—' })(), color: '#fbbf24' },
+          { label: 'Best Mode', value: (() => { const b = [...(playerData.modeStats ?? [])].sort((a: any, b: any) => (b.points ?? 0) - (a.points ?? 0))[0]; return b ? (GAME_MODES.find(m => m.id === b.mode)?.name ?? b.mode) : '—' })(), color: '#fbbf24' },
         ].map(stat => (
           <div key={stat.label} className="relative group">
             <div className="absolute inset-0 rounded-xl pointer-events-none opacity-40 group-hover:opacity-70 transition-opacity"
@@ -318,7 +314,7 @@ export default function PlayerPage({ params }: { params: Promise<{ id: string }>
           <div className="h-px flex-1 bg-white/5" />
         </div>
 
-        {(!player.recentMatches || player.recentMatches.length === 0) ? (
+        {(!playerData.recentMatches || playerData.recentMatches.length === 0) ? (
           <div className="relative rounded-xl text-center py-12 sm:py-16">
             <div className="absolute inset-0 rounded-xl pointer-events-none" style={{
               border: '1px solid rgba(255,255,255,0.04)',
@@ -335,7 +331,7 @@ export default function PlayerPage({ params }: { params: Promise<{ id: string }>
           </div>
         ) : (
           <div className="space-y-2 sm:space-y-3">
-            {player.recentMatches.map((match: any, idx: number) => {
+            {playerData.recentMatches.map((match: any, idx: number) => {
               const rColor = resultColor(match.result)
               return (
                 <div key={match.id} className="relative group">

@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
       },
     })
 
-    return NextResponse.json({
+    const resp = NextResponse.json({
       data: players.map((p, i) => ({
         rank: i + 1,
         id: p.id,
@@ -51,6 +51,8 @@ export async function GET(req: NextRequest) {
         })) : undefined,
       })),
     })
+    resp.headers.set('Cache-Control', 'public, s-maxage=30, stale-while-revalidate=120')
+    return resp
   } catch (error: any) {
     return NextResponse.json({ data: [], error: error?.message ?? 'Failed to fetch players' })
   }

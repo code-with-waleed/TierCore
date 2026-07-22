@@ -4,10 +4,11 @@ import { useState, useEffect, useMemo, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { useRouter, useParams } from 'next/navigation'
+import useSWR from 'swr'
 import { GAME_MODES, isValidMode, getModeName } from '@/lib/game-modes'
 import { getCombatRankFromPoints, COMBAT_RANKS, DEFAULT_TIERS, TIER_POINTS, TIER_ORDER } from '@/lib/points'
 import { RANK_EMBLEMS } from '@/lib/rank-emblems'
-import { cn, fetchWithTimeout } from '@/lib/utils'
+import { cn, swrFetcher } from '@/lib/utils'
 import type { LeaderboardEntry } from '@/types'
 import { GamemodeRanking } from '@/components/ranking/GamemodeRanking'
 
@@ -489,8 +490,6 @@ export default function RankingModePage() {
     }
   }, [mode, router])
 
-  const [entries, setEntries] = useState<LeaderboardEntry[]>([])
-  const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [showRanksInfo, setShowRanksInfo] = useState(false)
 
@@ -502,28 +501,18 @@ export default function RankingModePage() {
 
   const isOverall = validMode === 'overall'
 
-  useEffect(() => {
-    fetchLeaderboard()
-  }, [validMode])
-
-  async function fetchLeaderboard() {
-    setLoading(true)
-    try {
-      const params = new URLSearchParams({ mode: validMode, limit: '200', sort: '' })
-      const res = await fetchWithTimeout(`/api/leaderboard?${params}`)
-      const data = await res.json()
-      setEntries(data.data ?? [])
-    } catch {
-      setEntries([])
-    } finally {
-      setLoading(false)
-    }
-  }
+  const apiParams = new URLSearchParams({ mode: validMode, limit: '200', sort: '' })
+  const { data: leaderboardData, isLoading: loading } = useSWR(
+    `/api/leaderboard?${apiParams}`,
+    swrFetcher,
+    { revalidateOnFocus: false, dedupingInterval: 5000 }
+  )
+  const entries = leaderboardData?.data ?? []
 
   const filtered = useMemo(() => {
     if (!search.trim()) return entries
     const q = search.toLowerCase()
-    return entries.filter(e => e.username.toLowerCase().includes(q))
+    return entries.filter((e: LeaderboardEntry) => e.username.toLowerCase().includes(q))
   }, [search, entries])
 
   if (!isValidMode(mode)) return null
@@ -567,7 +556,7 @@ export default function RankingModePage() {
         {showRanksInfo && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4" onClick={() => setShowRanksInfo(false)}>
             <div className="absolute inset-0 bg-black/80 backdrop-blur-md" />
-            <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 bg-[#0a0a14] p-4 sm:p-6 shadow-2xl custom-scrollbar" onClick={e => e.stopPropagation()}>
+            <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 bg-[#0a0a14] p-4 sm:p-6 shadow-2xl custom-scrollbar" onClick={(e: React.MouseEvent) => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-4 sm:mb-6">
                 <div>
                   <h2 className="text-lg sm:text-xl font-black text-white">Rank &amp; Tier Guide</h2>

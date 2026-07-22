@@ -88,10 +88,12 @@ export async function GET(req: NextRequest) {
       const total = withTotal.length
       const paged = withTotal.slice((page - 1) * limit, page * limit)
 
-      return NextResponse.json({
+      const ovResp = NextResponse.json({
         data: paged.map((p, i) => formatPlayer(p, (page - 1) * limit + i + 1)),
         meta: { page, limit, total, totalPages: Math.ceil(total / limit) },
       })
+      ovResp.headers.set('Cache-Control', 'public, s-maxage=30, stale-while-revalidate=120')
+      return ovResp
     }
 
     if (!VALID_MODES.includes(mode as any)) {
@@ -135,13 +137,15 @@ export async function GET(req: NextRequest) {
     const total = withTotal.length
     const paged = withTotal.slice((page - 1) * limit, page * limit)
 
-    return NextResponse.json({
+    const modeResp = NextResponse.json({
       data: paged.map((s, i) => ({
         ...formatPlayer(s.player, (page - 1) * limit + i + 1),
         points: s.points,
       })),
       meta: { page, limit, total, totalPages: Math.ceil(total / limit) },
     })
+    modeResp.headers.set('Cache-Control', 'public, s-maxage=30, stale-while-revalidate=120')
+    return modeResp
   } catch (e) {
     console.error('[Leaderboard API]', e)
     return NextResponse.json({ data: [], meta: { page: 1, limit: 50, total: 0, totalPages: 0 } })

@@ -1,10 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
+import useSWR from 'swr'
 import { GAME_MODES } from '@/lib/game-modes'
 import { getCombatRankFromPoints, TIER_ORDER } from '@/lib/points'
 import { RANK_EMBLEMS } from '@/lib/rank-emblems'
+import { swrFetcher } from '@/lib/utils'
 import type { LeaderboardEntry, ModeStatInfo } from '@/types'
 
 const REGION_COLORS: Record<string, string> = {
@@ -125,32 +127,19 @@ function CombatRankDisplay(props: { rankKey: string; rankName: string; points: n
 }
 
 export default function LeaderboardPage() {
-  const [entries, setEntries] = useState<LeaderboardEntry[]>([])
-  const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
 
-  useEffect(() => {
-    fetchLeaderboard()
-  }, [])
-
-  async function fetchLeaderboard(searchTerm?: string) {
-    setLoading(true)
-    try {
-      const params = new URLSearchParams({ limit: '50', mode: 'overall' })
-      if (searchTerm || search) params.set('search', searchTerm || search)
-      const res = await fetch(`/api/leaderboard?${params}`)
-      const data = await res.json()
-      setEntries(data.data ?? [])
-    } catch {
-      setEntries([])
-    } finally {
-      setLoading(false)
-    }
-  }
+  const params = new URLSearchParams({ limit: '50', mode: 'overall' })
+  if (search) params.set('search', search)
+  const { data, isLoading: loading } = useSWR<{ data: LeaderboardEntry[] }>(
+    `/api/leaderboard?${params}`,
+    swrFetcher,
+    { revalidateOnFocus: false, dedupingInterval: 5000 }
+  )
+  const entries: LeaderboardEntry[] = data?.data ?? []
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault()
-    fetchLeaderboard()
   }
 
   return (

@@ -5,6 +5,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export async function swrFetcher(url: string) {
+  const res = await fetch(url)
+  if (!res.ok) throw new Error('Failed to fetch')
+  return res.json()
+}
+
 export function formatNumber(num: number): string {
   return new Intl.NumberFormat('en-US').format(num)
 }

@@ -1,37 +1,26 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { fetchWithTimeout } from '@/lib/utils'
+import useSWR, { useSWRConfig } from 'swr'
+import { swrFetcher } from '@/lib/utils'
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState({ players: 0, matches: 0, pending: 0 })
-  const [statsLoaded, setStatsLoaded] = useState(false)
   const [clearing, setClearing] = useState(false)
   const [clearMsg, setClearMsg] = useState('')
   const [confirmClear, setConfirmClear] = useState(false)
   const router = useRouter()
+  const { mutate } = useSWRConfig()
 
-  useEffect(() => {
-    fetchStats()
-  }, [])
-
-  async function fetchStats() {
-    try {
-      const [pRes, mRes] = await Promise.all([
-        fetchWithTimeout('/api/players'),
-        fetchWithTimeout('/api/matches'),
-      ])
-      const pData = await pRes.json()
-      const mData = await mRes.json()
-      setStats({
-        players: pData.data?.length ?? 0,
-        matches: mData.data?.length ?? 0,
-        pending: mData.data?.filter((m: any) => m.status === 'PENDING').length ?? 0,
-      })
-    } catch {} finally { setStatsLoaded(true) }
+  const { data: pData, isLoading: pLoading } = useSWR('/api/players', swrFetcher, { revalidateOnFocus: false, dedupingInterval: 5000 })
+  const { data: mData, isLoading: mLoading } = useSWR('/api/matches', swrFetcher, { revalidateOnFocus: false, dedupingInterval: 5000 })
+  const stats = {
+    players: pData?.data?.length ?? 0,
+    matches: mData?.data?.length ?? 0,
+    pending: mData?.data?.filter((m: any) => m.status === 'PENDING').length ?? 0,
   }
+  const statsLoaded = !pLoading && !mLoading
 
   async function handleLogout() {
     await fetch('/api/admin/auth', { method: 'DELETE' })
@@ -46,7 +35,7 @@ export default function AdminDashboard() {
       if (r.ok) {
         setClearMsg('All matches and game data cleared!')
         setConfirmClear(false)
-        fetchStats()
+        mutate('/api/players'); mutate('/api/matches')
       } else {
         const d = await r.json()
         setClearMsg(`Error: ${d.error}`)
