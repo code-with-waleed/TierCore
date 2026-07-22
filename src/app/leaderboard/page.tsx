@@ -7,6 +7,7 @@ import { GAME_MODES } from '@/lib/game-modes'
 import { getCombatRankFromPoints, TIER_ORDER } from '@/lib/points'
 import { RANK_EMBLEMS } from '@/lib/rank-emblems'
 import { swrFetcher } from '@/lib/utils'
+import { PlayerContextMenu } from '@/components/ui/PlayerContextMenu'
 import type { LeaderboardEntry, ModeStatInfo } from '@/types'
 
 const REGION_COLORS: Record<string, string> = {
@@ -181,9 +182,10 @@ export default function LeaderboardPage() {
           {entries.map((entry, i) => {
             const combatRank = getCombatRankFromPoints(entry.overallPoints ?? entry.points)
             const regionColor = REGION_COLORS[entry.region ?? ''] ?? '#6B7280'
+            const tierSummary = `${combatRank.name} (${entry.points.toLocaleString()} pts)`
             return (
+              <PlayerContextMenu key={entry.playerId} username={entry.username} tiers={tierSummary}>
               <Link
-                key={entry.playerId}
                 href={`/player/${entry.playerId}`}
                 className="group flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 card-premium"
               >
@@ -260,6 +262,7 @@ export default function LeaderboardPage() {
                   </div>
                 </div>
               </Link>
+              </PlayerContextMenu>
             )
           })}
         </div>

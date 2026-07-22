@@ -9,6 +9,7 @@ import { GAME_MODES, isValidMode, getModeName } from '@/lib/game-modes'
 import { getCombatRankFromPoints, COMBAT_RANKS, DEFAULT_TIERS, TIER_POINTS, TIER_ORDER } from '@/lib/points'
 import { RANK_EMBLEMS } from '@/lib/rank-emblems'
 import { cn, swrFetcher } from '@/lib/utils'
+import { PlayerContextMenu } from '@/components/ui/PlayerContextMenu'
 import type { LeaderboardEntry } from '@/types'
 import { GamemodeRanking } from '@/components/ranking/GamemodeRanking'
 
@@ -206,11 +207,14 @@ function PlayerCard({ entry, rank }: { entry: LeaderboardEntry; rank: number }) 
 
   const clipPathOctPct = 'polygon(15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%, 0% 15%)'
 
+  const tierSummary = `${combatRank.name} (${entry.overallPoints ?? entry.points} pts)`
+
   return (
-    <Link
-      href={`/player/${entry.playerId}`}
-      className="group relative z-50 flex gap-1.5 sm:gap-3 cursor-pointer transition-all duration-200 hover:scale-[1.005]"
-    >
+    <PlayerContextMenu username={entry.username} tiers={tierSummary}>
+      <Link
+        href={`/player/${entry.playerId}`}
+        className="group relative z-50 flex gap-1.5 sm:gap-3 cursor-pointer transition-all duration-200 hover:scale-[1.005]"
+      >
       {/* Avatar section */}
       <div className="relative flex-shrink-0 w-20 h-20 sm:w-28 sm:h-28">
         <div className="absolute inset-0 shadow-lg shadow-black/40" style={{ background: gradient, clipPath: clipPathOctPct }} />
@@ -452,6 +456,7 @@ function PlayerCard({ entry, rank }: { entry: LeaderboardEntry; rank: number }) 
       </div>
       </div>
     </Link>
+    </PlayerContextMenu>
   )
 }
 
