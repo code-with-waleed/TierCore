@@ -191,16 +191,25 @@ export default function LeaderboardPage() {
               >
                 {/* Left Section: Rank + Avatar + Info */}
                 <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto flex-1 min-w-0">
-                  {/* Rank Number */}
-                  <div className="w-8 sm:w-12 flex-shrink-0 text-center">
+                  {/* Rank Number + Emblem Circle */}
+                  <div className="w-8 sm:w-12 flex-shrink-0 flex flex-col items-center gap-1">
                     <span className={`text-lg sm:text-2xl font-black block leading-none ${
                       i === 0 ? 'text-yellow-400 drop-shadow-[0_0_8px_rgba(234,179,8,0.4)]' : i === 1 ? 'text-gray-300' : i === 2 ? 'text-amber-600' : 'text-muted-foreground/50'
                     }`}>
                       #{entry.rank}
                     </span>
-                    <span className="text-[8px] sm:text-[10px] font-semibold tracking-wide mt-0.5 block" style={{ color: combatRank.color }}>
-                      {combatRank.name}
-                    </span>
+                    <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center" style={{
+                      background: `${combatRank.color}18`,
+                      border: `2px solid ${combatRank.color}40`,
+                      boxShadow: `0 0 8px ${combatRank.color}25`,
+                    }}>
+                      {RANK_EMBLEMS[combatRank.key] ? (() => {
+                        const E = RANK_EMBLEMS[combatRank.key]!
+                        return <E size={i < 3 ? 22 : 18} />
+                      })() : (
+                        <span className="text-[8px] font-bold" style={{ color: combatRank.color }}>{combatRank.name.slice(0, 2)}</span>
+                      )}
+                    </div>
                   </div>
 
                   {/* Avatar */}
